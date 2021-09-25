@@ -1,6 +1,7 @@
 ---
 
 nginx_certbot: yes
+certbot_regenerate: no
 
 nginx_proxy_headers:
   X-Forwarded-For: '$remote_addr'

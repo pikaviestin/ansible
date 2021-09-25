@@ -4,3 +4,4 @@ collections:
   - name: uumas.general
   - name: uumas.docker
     version: '>=0.1.1'
+  - name: community.crypto
