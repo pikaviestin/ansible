@@ -12,6 +12,8 @@ synapse_metrics: no
 
 synapse_psql_host: psql1.n.kapsi.fi
 synapse_psql_user: matrix_ax
+authentik_psql_host: psql1.n.kapsi.fi
+authentik_psql_user: matrix_ax_authentik
 
 matrix_auto_join_rooms:
   - '#hub:matrix.ax'
@@ -58,6 +60,11 @@ nginx_confs:
   - ssl-headers.conf
 
 nginx_upstreams:
+  authentik_main:
+    servers:
+      - 9000
+    locations:
+      - name: '/'
   synapse_main:
     servers:
       - 8008
@@ -203,6 +210,11 @@ nginx_maps:
 
 
 nginx_servers:
+  - listen:
+      - ip: 'all'
+    name: "login.{{ matrix_domain }}"
+    reverse_proxy:
+      - authentik_main
   - listen:
       - ip: 'all'
       - ip: "{{ 'localhost' if matrix_extras is defined and synapse_workers is defined else '' }}"
