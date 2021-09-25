@@ -6,4 +6,5 @@
     - uumas.general.packages    # Installs useful packages
     - uumas.general.ssh         # Configures sshd
     - uumas.general.users       # Creates users
+    - uumas.docker.docker       # Installs docker
 
