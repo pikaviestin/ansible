@@ -44,6 +44,12 @@ server {
 }
 {% endif %}
 
+# Websocket map
+map $http_upgrade $connection_upgrade {
+	default upgrade;
+	''      close;
+}
+
 {% for server in nginx_servers %}
 server {
 {% for listener in server.listen %}
@@ -63,11 +69,11 @@ server {
 {% endif %}
 {% endfor %}
 
-{% if server.redirect is defined %}
-# Returns
+{% if server.return is defined %}
+# Sipmle returns
 {% for return in server.return %}
 	location {{ return.location }} {
-		return {{ type | default('200') }} {{ return.content }};
+		return {{ return.type | default('200') }} '{{ return.content }}';
 {% if return.headers is mapping %}
 {% for header in return.headers | dict2items %}
 		add_header {{ header.key }} {{ header.value }};
