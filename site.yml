@@ -9,4 +9,5 @@
     - uumas.docker.docker       # Installs docker
     - nginx
     - matrix-synapse
+    - docker
 
