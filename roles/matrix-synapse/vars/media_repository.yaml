@@ -1,0 +1,3 @@
+worker_app: media_repository
+worker_listeners:
+  - media

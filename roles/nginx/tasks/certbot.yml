@@ -1,0 +1,23 @@
+---
+
+- name: Install Certbot.
+  package:
+    name: 
+      - certbot
+      - python3-certbot-nginx
+
+- name: Check if certificate exists
+  stat:
+    path: /etc/letsencrypt/live/{{ ansible_fqdn }}/cert.pem
+  register: cert
+
+- name: Generate new certificate if one doesn't exist.
+  command: certbot --nginx certonly --non-interactive --email {{ certbot_admin_email }} --agree-tos --domains {{ ansible_fqdn }}{% for server in nginx_servers %}{% if server.name is defined %},{{ server.name }}{% endif %}{% endfor %}
+  when: not cert.stat.exists
+
+- name: Configure certificate for nginx
+  template:
+    src: letsencrypt.conf
+    dest: /etc/nginx/conf.d/letsencrypt.conf
+  notify: reload nginx
+

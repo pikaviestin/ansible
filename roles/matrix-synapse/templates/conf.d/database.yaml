@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+database:
+  name: "psycopg2"
+  args:
+    user: "{{ synapse_psql_user }}"
+    password: "{{ synapse_psql_pw }}"
+    database: {{ synapse_psql_db }}
+    host: {{ synapse_psql_host }}
+    cp_min: 2
+    cp_max: 3
+

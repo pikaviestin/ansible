@@ -1,0 +1,19 @@
+---
+
+- name: Create matrix-synchrotron-{{ item }} workdir
+  file: 
+    path: /opt/matrix-synchrotron/{{ item }}
+    state: directory
+    mode: 0755
+- name: Put matrix-synchrotron-{{ item }} config in place
+  template:
+    src: "matrix-synchrotron-config.yaml.j2"
+    dest: "/opt/matrix-synchrotron/{{ item }}/config.yaml.ansibled"
+  notify: config synapse service
+  register: config
+- name: Put matrix-synchrotron-{{ item }} config in final destination
+  copy:
+    src: "/opt/matrix-synchrotron/{{ item }}/config.yaml.ansibled"
+    dest: "/opt/matrix-synchrotron/{{ item }}/config.yaml"
+    remote_src: yes
+  when: config.changed

@@ -1,0 +1,114 @@
+---
+
+- name: Install dependencies
+  apt:
+    name: "{{ depends }}"
+    update_cache: yes
+
+- name: Add matrix repo signing key
+  apt_key:
+    url: 'https://packages.matrix.org/debian/matrix-org-archive-keyring.gpg'
+    id: 'AAF9AE843A7584B5A3E4CD2BCF45A512DE2DA058'
+
+- name: Add matrix repo
+  apt_repository:
+    repo: "deb https://packages.matrix.org/debian/ {{ ansible_distribution_release }} main"
+
+- name: Install synapse
+  apt:
+    name: matrix-synapse-py3
+    state: latest
+
+- name: Put synapse configs in place
+  template:
+    src: "conf.d/{{ item }}"
+    dest: "/etc/matrix-synapse/conf.d/{{ item }}"
+    mode: '644'
+  loop:
+    - database.yaml
+    - general.yaml
+    - listeners.yaml
+    - server_name.yaml
+    - url_preview.yaml
+  notify: config matrix target
+- name: autojoin config
+  template:
+    src: 'conf.d/autojoin.yaml'
+    dest: '/etc/matrix-synapse/conf.d/autojoin.yaml'
+    mode: '644'
+  when: matrix_auto_join_rooms is defined
+- name: password provider config
+  template:
+    src: 'conf.d/password_providers.yaml'
+    dest: '/etc/matrix-synapse/conf.d/password_providers.yaml'
+    mode: '644'
+  when: synapse_ldap_servers is defined or synapse_shared_secret_auth is defined
+
+- name: Install matrix-synapse-shared-secret-auth
+  pip:
+    name: 'git+https://github.com/devture/matrix-synapse-shared-secret-auth'
+    state: latest
+    virtualenv: /opt/venvs/matrix-synapse
+  notify: config synapse service
+  when: synapse_shared_secret_auth is defined
+
+- name: Put systemd units in place
+  template:
+    src: "systemd/{{ item }}"
+    dest: '/etc/systemd/system/{{ item }}'
+    mode: '644'
+  loop:
+    - matrix-synapse.service
+    - matrix.target
+  notify: 
+    - config synapse service
+    - config matrix target
+
+- block:
+  - name: Install redis
+    apt:
+      name: redis-server
+
+  - name: Put worker systemd unit in place
+    template:
+      src: "systemd/matrix-synapse-worker@.service"
+      dest: '/etc/systemd/system/matrix-synapse-worker@.service'
+      mode: '644'
+    notify: config worker services
+
+  - name: Create workers config directories
+    file:
+      path: /etc/matrix-synapse/{{ item }}
+      state: directory
+    loop:
+      - workers
+      - worker-logs
+
+  - name: Initialize synapse worker vars
+    set_fact:
+      synapse_worker_services: []
+      synapse_synchrotrons: []
+
+  - name: 'Create worker pidfile dir in /run'
+    file:
+      path: /run/matrix-synapse/
+      state: directory
+      owner: matrix-synapse
+      group: nogroup
+  - name: Create tmpfiles config for pidfile dir in run
+    template:
+      src: 'tmpfiles-matrix-synapse.conf'
+      dest: '/etc/tmpfiles.d/matrix-synapse.conf'
+      mode: '644'
+
+  - name: Configure workers
+    include_tasks: workers.yml
+    loop: "{{ synapse_workers|dict2items }}"
+
+  - name: Configure synchrotron balancer
+    include_tasks: matrix-synchrotrons.yml
+    when: synapse_synchrotrons | length != 0
+
+  when: synapse_workers is defined
+
+- meta: flush_handlers

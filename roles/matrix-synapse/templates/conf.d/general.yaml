@@ -1,0 +1,57 @@
+# {{ ansible_managed }}
+
+public_baseurl: '{{ matrix_external_url }}'
+admin_contact: '{{ synapse_admin_contact }}'
+max_upload_size: {{ matrix_max_upload_size_mb }}M
+enable_registration: false
+allow_public_rooms_over_federation: true
+registration_shared_secret: '{{ matrix_registration_shared_secret }}'
+enable_group_creation: true
+enable_metrics: {{ synapse_metrics }}
+use_presence: {{ synapse_presence }}
+{% if synapse_workers is defined %}
+
+# Workers
+redis:
+  enabled: true
+{% if 'appservice' in synapse_workers %}
+notify_appservices: false
+{% endif %}
+{% if 'pusher' in synapse_workers %}
+start_pushers: false
+{% endif %}
+{% if 'user_dir' in synapse_workers %}
+update_user_directory: false
+{% endif %}
+
+
+{% if 'media_repository' in synapse_workers %}
+enable_media_repo: false
+{% endif %}
+{% if 'event_persister' in synapse_workers %}
+instance_map:
+{% for port in synapse_workers.event_persister %}
+  event_persister-{{ loop.index0 }}:
+    host: localhost
+    port: {{ port }}
+{% endfor %}
+
+stream_writers:
+  events:
+{% for port in synapse_workers.event_persister %}
+    - event_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% if 'federation_sender' in synapse_workers %}
+send_federation: false
+
+{% if synapse_workers.federation_sender|length > 1 %}
+federation_sender_instances:
+{% for port in synapse_workers.federation_sender %}
+  - federation_sender-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+{% endif %}

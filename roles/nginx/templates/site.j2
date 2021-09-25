@@ -1,0 +1,139 @@
+# {{ ansible_managed }}
+
+{% if nginx_upstreams is defined %}
+# Upstreams
+{% for upstream in nginx_upstreams | dict2items %}
+{% if upstream.value.servers | length != 0 %}
+upstream {{ upstream.key }} {
+{% if upstream.value.method is defined %}
+	{{ upstream.value.method }};
+{% endif %}
+{% for port in upstream.value.servers %}
+	server 127.0.0.1:{{ port }};
+{% endfor %}
+}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if nginx_maps is defined %}
+{% for map in nginx_maps | dict2items %}
+{% if map.value.var | length != 0 %}
+map ${{ map.value.var }} ${{ map.key }} {
+{% for rule in map.value.rules | dict2items %}
+	{{ rule.key }} {{ rule.value }};
+{% endfor %}
+}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if nginx_certbot %}
+# HTTP -> HTTPS redirect
+server {
+	listen       0.0.0.0:80 default_server;
+{% if ansible_default_ipv6.address is defined %}
+	listen       [::]:80 default_server;
+{% endif %}
+	server_name  {{ ansible_fqdn }};
+	location / {
+		return 301 https://$server_name$request_uri;
+	}
+}
+{% endif %}
+
+{% for server in nginx_servers %}
+server {
+{% for listener in server.listen %}
+{% if listener.ip == 'all' %}
+	listen        0.0.0.0:{{ listener.port | default('443' if nginx_certbot else '80') }} {{ 'ssl http2 ' if nginx_certbot else '' }}{{ 'default_server' if server.name is not defined or server.name == ansible_fqdn }};
+{% if ansible_default_ipv6.address is defined %}
+	listen        [::]:{{ listener.port | default('443' if nginx_certbot else '80') }} {{ 'ssl http2 ' if nginx_certbot else '' }}{{ 'default_server' if server.name is not defined or server.name == ansible_fqdn }};
+{% endif %}
+	server_name   {{ server.name | default(ansible_fqdn) }};
+
+{% elif listener.ip == 'localhost' %}
+	listen        127.0.0.1:{{ listener.port }} default_server;
+{% if ansible_default_ipv6.address is defined %}
+	listen        [::1]:{{ listener.port }} default_server;
+{% endif %}
+	server_name   localhost;
+{% endif %}
+{% endfor %}
+
+{% if server.redirect is defined %}
+# Returns
+{% for return in server.return %}
+	location {{ return.location }} {
+		return {{ type | default('200') }} {{ return.content }};
+{% if return.headers is mapping %}
+{% for header in return.headers | dict2items %}
+		add_header {{ header.key }} {{ header.value }};
+{% endfor %}
+{% endif %}
+	}
+{% endfor %}
+{% endif %}
+
+{% if server.reverse_proxy is defined %}
+# Reverse proxy
+{% for upstream in server.reverse_proxy %}
+{% if nginx_upstreams[upstream].servers | length != 0 %}
+
+# {{ upstream }}
+{% for location in nginx_upstreams[upstream].locations %}
+
+{% if location.name | length != 0 %}
+	location {{ location.name }} {
+		proxy_pass http://{{ upstream }};
+{% if nginx_proxy_headers is mapping %}
+{% for header in nginx_proxy_headers | dict2items %}
+		proxy_set_header {{ header.key }} {{ header.value }};
+{% endfor %}
+{% endif %}
+{% if location.additional_options is defined %}
+{% for item in location.additional_options %}
+		{{ item }};
+{% endfor %}
+{% endif %}
+	}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if server.reverse_proxy_map is defined %}
+# Mapping reverse proxy
+{% for map in server.reverse_proxy_map %}
+{% if nginx_maps[map].var | length != 0 %}
+
+# {{ map }}
+{% for location in nginx_maps[map].locations %}
+
+{% if location.name | length != 0 %}
+	location {{ location.name }} {
+		proxy_pass http://${{ map }};
+{% if nginx_proxy_headers is mapping %}
+{% for header in nginx_proxy_headers | dict2items %}
+		proxy_set_header {{ header.key }} {{ header.value }};
+{% endfor %}
+{% endif %}
+{% if location.additional_options is defined %}
+{% for item in location.additional_options %}
+		{{ item }};
+{% endfor %}
+{% endif %}
+	}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+}
+
+{% endfor %}

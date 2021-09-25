@@ -1,0 +1,36 @@
+---
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+
+- name: Disable default config
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
+- include_tasks: certbot.yml
+  when: nginx_certbot
+
+- name: Configs
+  template:
+    src: "conf/{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item }}"
+  loop: "{{ nginx_confs }}"
+  notify: reload nginx
+
+- name: Add site
+  template:
+    src: "site.j2"
+    dest: "/etc/nginx/sites-available/main"
+  notify: reload nginx
+
+- name: Enable site
+  file:
+    src: "../sites-available/main"
+    dest: "/etc/nginx/sites-enabled/main"
+    state: link
+  notify: reload nginx
+

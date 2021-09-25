@@ -1,0 +1,8 @@
+---
+
+nginx_certbot: yes
+
+nginx_proxy_headers:
+  X-Forwarded-For: '$remote_addr'
+  X-Forwarded-Proto: '$scheme'
+

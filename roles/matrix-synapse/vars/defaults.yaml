@@ -1,0 +1,3 @@
+worker_app: generic_worker
+worker_listeners:
+  - client
