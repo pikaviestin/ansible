@@ -1,0 +1,52 @@
+---
+
+- name: Authentik redis
+  docker_container:
+   name: authentik_redis
+   image: redis:alpine
+   networks:
+    - name: authentik
+
+- name: Authentik server
+  docker_container:
+   name: authentik_server
+   image: ghcr.io/goauthentik/server:2021.9.2
+   pull: yes
+   command: server
+   restart_policy: unless-stopped
+   env:
+    AUTHENTIK_REDIS__HOST: redis
+    AUTHENTIK_POSTGRESQL__HOST: {{ authentik_psql_host }}
+    AUTHENTIK_POSTGRESQL__USER: "{{ authentik_psql_user }}"
+    AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_psql_user }}"
+    AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
+   volumes:
+    - /opt/docker/appdata/authentik/templates:/templates
+    - /opt/docker/appdata/authentik/media:/media
+   networks:
+    - name: authentik
+
+- name: Authentik worker
+  docker_container:
+   name: authentik_worker
+   image: ghcr.io/goauthentik/server:2021.9.2
+   pull: yes
+   command: worker
+   restart_policy: unless-stopped
+   # This is optional, and can be removed. If you remove this, the following will happen
+   # - The permissions for the /backups and /media folders aren't fixed, so make sure they are 1000:1000
+   # - The docker socket can't be accessed anymore
+   user: root
+   env:
+    AUTHENTIK_REDIS__HOST: redis
+    AUTHENTIK_POSTGRESQL__HOST: {{ authentik_psql_host }}
+    AUTHENTIK_POSTGRESQL__USER: "{{ authentik_psql_user }}"
+    AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_psql_user }}"
+    AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
+   volumes:
+    - /opt/docker/appdata/authentik/backups:/backups
+    - /opt/docker/appdata/authentik/media:/media
+    - /opt/docker/appdata/authentik/templates:/templates
+    - /var/run/dcoker.sock:/var/run/docker.sock
+   networks:
+    - name: authentik
