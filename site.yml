@@ -7,7 +7,7 @@
     - uumas.general.ssh         # Configures sshd
     - uumas.general.users       # Creates users
     - uumas.docker.docker       # Installs docker
-    - nginx
-    - matrix-synapse
+    - nginx                     # Installs and configures nginx
+    - matrix-synapse            # Installs and configures synapse
     - docker
 
