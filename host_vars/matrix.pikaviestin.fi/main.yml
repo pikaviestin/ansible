@@ -60,6 +60,10 @@ synapse_workers:
   frontend_proxy:
     - 8092
 
+nginx:
+  http:
+    server_tokens: 'off'
+
 nginx_upstreams:
   authentik_main:
     servers:
@@ -214,7 +218,6 @@ nginx_maps:
       - name: '~ ^/_matrix/client/(v2_alpha|r0)/sync$'
         additional_options:
           - 'proxy_read_timeout 1h'
-
 
 nginx_servers:
   - listen:

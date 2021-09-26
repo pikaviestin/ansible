@@ -5,6 +5,12 @@
     name: nginx
     state: latest
 
+- name: Install nginx.conf
+  template:
+    src: "nginx.j2"
+    dest: "/etc/nginx/nginx.conf"
+  notify: reload nginx
+
 - name: Disable default config
   file:
     path: /etc/nginx/sites-enabled/default
