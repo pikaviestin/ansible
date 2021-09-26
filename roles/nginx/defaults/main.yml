@@ -1,5 +1,7 @@
 ---
 
+nginx_confs: []
+
 nginx_certbot: yes
 certbot_regenerate: no
 

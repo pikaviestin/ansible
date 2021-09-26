@@ -56,9 +56,6 @@ synapse_workers:
   frontend_proxy:
     - 8092
 
-nginx_confs:
-  - ssl-headers.conf
-
 nginx_upstreams:
   authentik_main:
     servers:

@@ -16,8 +16,8 @@
 
 - name: Configs
   template:
-    src: "conf/{{ item }}"
-    dest: "/etc/nginx/conf.d/{{ item }}"
+    src: "conf/{{ item }}.conf.j2"
+    dest: "/etc/nginx/conf.d/{{ item }}.conf"
   loop: "{{ nginx_confs }}"
   notify: reload nginx
 

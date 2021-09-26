@@ -33,3 +33,6 @@
     dest: /etc/nginx/conf.d/letsencrypt.conf
   notify: reload nginx
 
+- name: Add ssl header config
+  set_fact:
+    nginx_confs: "{{ nginx_confs + [ 'ssl-headers' ] }}"
