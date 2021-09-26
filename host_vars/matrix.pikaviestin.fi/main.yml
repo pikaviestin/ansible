@@ -112,7 +112,13 @@ nginx_upstreams:
     servers: "{{ synapse_workers.generic_login | default('') }}"
     locations:
       - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/login$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/login/sso/redirect'
       - name: '~ ^/_matrix/client/(r0|unstable)/register$'
+      - name: '~ ^/_synapse/client/pick_idp$'
+      - name: '~ ^/_synapse/client/pick_username'
+      - name: '~ ^/_synapse/client/new_user_consent$'
+      - name: '~ ^/_synapse/client/sso_register$'
+      - name: '~ ^/_synapse/client/oidc/callback$'
   synapse_generic_federation:
     servers: "{{ synapse_workers.generic_federation | default('') }}"
     locations:
