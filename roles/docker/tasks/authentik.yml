@@ -8,17 +8,23 @@
   docker_container:
    name: authentik_redis
    image: redis:alpine
+   restart_policy: unless-stopped
    networks:
     - name: authentik
 
 - name: Authentik server
   docker_container:
    name: authentik_server
-   image: beryju.org/authentik/server:gh-flow-inspect
-   pull: yes
+   image: beryju.org/authentik/server:gh-flow-inspect-1
+   pull: no
    command: server
    restart_policy: unless-stopped
    env:
+    AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
+    AUTHENTIK_EMAIL__HOST: "{{ authentik_email_host }}"
+    AUTHENTIK_EMAIL__PORT: "{{ authentik_email_port }}"
+    AUTHENTIK_EMAIL__USE_TLS: "{{ authentik_email_use_tls }}"
+    AUTHENTIK_EMAIL__TIMEOUT: '10'
     AUTHENTIK_REDIS__HOST: authentik_redis
     AUTHENTIK_SECRET_KEY: "{{ authentik_secret_key }}"
     AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_psql_host }}"
@@ -36,8 +42,8 @@
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   image: beryju.org/authentik/server:gh-flow-inspect
-   pull: yes
+   image: beryju.org/authentik/server:gh-flow-inspect-1
+   pull: no
    command: worker
    restart_policy: unless-stopped
    # This is optional, and can be removed. If you remove this, the following will happen
@@ -45,6 +51,11 @@
    # - The docker socket can't be accessed anymore
    user: root
    env:
+    AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
+    AUTHENTIK_EMAIL__HOST: "{{ authentik_email_host }}"
+    AUTHENTIK_EMAIL__PORT: "{{ authentik_email_port }}"
+    AUTHENTIK_EMAIL__USE_TLS: "{{ authentik_email_use_tls }}"
+    AUTHENTIK_EMAIL__TIMEOUT: '10'
     AUTHENTIK_REDIS__HOST: authentik_redis
     AUTHENTIK_SECRET_KEY: "{{ authentik_secret_key }}"
     AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_psql_host }}"
@@ -55,6 +66,6 @@
     - /opt/docker/appdata/authentik/backups:/backups
     - /opt/docker/appdata/authentik/media:/media
     - /opt/docker/appdata/authentik/templates:/templates
-    - /var/run/dcoker.sock:/var/run/docker.sock
+    - /var/run/docker.sock:/var/run/docker.sock
    networks:
     - name: authentik

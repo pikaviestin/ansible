@@ -14,6 +14,10 @@ synapse_psql_host: psql1.n.kapsi.fi
 synapse_psql_user: matrix_ax
 authentik_psql_host: psql1.n.kapsi.fi
 authentik_psql_user: matrix_ax_authentik
+authentik_email_from: 'yllapito@pikaviestin.fi'
+authentik_email_host: 'mail.kapsi.fi'
+authentik_email_port: '25'
+authentik_email_use_tls: 'false'
 
 matrix_auto_join_rooms:
   - '#hub:matrix.ax'
