@@ -20,9 +20,9 @@ http {
         sendfile on;
         tcp_nopush on;
         types_hash_max_size 2048;
-       {% if nginx.http.server_tokens is defined %}
+{% if nginx.http.server_tokens is defined %}
         server_tokens {{ nginx.http.server_tokens }};
-       {% endif %}
+{% endif %}
 
         # server_names_hash_bucket_size 64;
         # server_name_in_redirect off;
@@ -34,13 +34,13 @@ http {
         # SSL Settings
         ##
 
-      {% if nginx.http.ssl is defined %}
+{% if nginx.http.ssl is defined %}
         ssl_protocols {{ nginx.ssl.ssl_protocols }};
         ssl_prefer_server_ciphers {{ nginx.ssl.ssl_prefer_server_ciphers }};
-      {% else %}
+{% else %}
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
         ssl_prefer_server_ciphers on;
-      {% endif %}
+{% endif %}
 
         ##
         # Logging Settings
@@ -52,11 +52,11 @@ http {
         ##
         # Gzip Settings
         ##
-  {% if nginx.http.gzip is defined %}
-       gzip {{ nginx.http.gzip }};
-  {% else %}
-       gzip on;
-  {% endif %}
+{% if nginx.http.gzip is defined %}
+        gzip {{ nginx.http.gzip }};
+{% else %}
+        gzip on;
+{% endif %}
 
         # gzip_vary on;
         # gzip_proxied any;
