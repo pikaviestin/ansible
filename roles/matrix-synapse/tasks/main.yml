@@ -31,6 +31,12 @@
     - server_name.yaml
     - url_preview.yaml
   notify: config matrix target
+- name: retention config
+  template:
+    src: 'conf.d/retention.yaml'
+    dest: '/etc/matrix-synapse/conf.d/retention.yaml'
+    mode: '644'
+  when: matrix.retention is defined
 - name: autojoin config
   template:
     src: 'conf.d/autojoin.yaml'
@@ -43,6 +49,12 @@
     dest: '/etc/matrix-synapse/conf.d/password_providers.yaml'
     mode: '644'
   when: synapse_ldap_servers is defined or synapse_shared_secret_auth is defined
+- name: oidc provider config
+  template:
+    src: 'conf.d/oidc_providers.yaml'
+    dest: '/etc/matrix-synapse/conf.d/oidc_providers.yaml'
+    mode: '644'
+  when: matrix_openidc_providers is defined
 
 - name: Install matrix-synapse-shared-secret-auth
   pip:
