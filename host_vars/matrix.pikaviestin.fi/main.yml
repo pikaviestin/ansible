@@ -73,7 +73,7 @@ matrix_openidc_providers:
       - "profile"
     user_mapping_provider:
       config:
-        localpart_template: "{{ '{{ user.username }}' }}"
+        localpart_template: "{{ '{{ user.name }}' }}"
         display_name_template: "{{ '{{ user.name|capitalize }}' }}"
 
 nginx:
