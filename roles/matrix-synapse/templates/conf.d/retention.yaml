@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+
+{% if matrix.retention is defined %}
+retention:
+  enabled: "{{ matrix.retention.enabled }}"
+  default_policy:
+    min_lifetime: "{{ matrix.retention.default_policy.min_lifetime }}"
+    max_lifetime: "{{ matrix.retention.default_policy.max_lifetime }}"
+{% if matrix.retention.allowed_lifetime is defined %}
+  allowed_lifetime_min: "{{ matrix.retention.allowed_lifetime.min }}"
+  allowed_lifetime_max: "{{ matrix.retention.allowed_lifetime.max }}"
+{% endif %}
+{% if matrix.retention.purge_jobs is defined %}
+  purge_jobs:
+{% for job in matrix.retention.purge_jobs %}
+    - "{{ job }}"
+      "{{ job.interval }}"
+{% endfor %}
+{% endif %}
+{% endif %}
