@@ -18,6 +18,7 @@ authentik_email_from: 'yllapito@pikaviestin.fi'
 authentik_email_host: 'mail.kapsi.fi'
 authentik_email_port: '25'
 authentik_email_use_tls: 'false'
+authentik_log_level: debug
 
 matrix_auto_join_rooms:
   - '#hub:matrix.ax'
@@ -59,6 +60,24 @@ synapse_workers:
     - 8081
   frontend_proxy:
     - 8092
+
+matrix_openidc_providers:
+  - idp_id: authentik
+    idp_name: Authentik
+    discover: false
+    issuer: authentik
+    client_id: "52611cbe0a8e16c458026d4f7b3c966cd0acd549"
+    client_secret: "{{ matrix_openidc_providers_authentik_client_secret }}"
+    scopes:
+      - "openid"
+      - "profile"
+    authorization_endpoint: "https://login.pikaviestin.fi/application/o/authorize/"
+    token_endpoint: "https://login.pikaviestin.fi/application/o/token/"
+    userinfo_endpoint: "https://login.pikaviestin.fi/application/o/userinfo/"
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ '{{ user.username }}' }}"
+        display_name_template: "{{ '{{ user.name|capitalize }}' }}"
 
 nginx:
   http:

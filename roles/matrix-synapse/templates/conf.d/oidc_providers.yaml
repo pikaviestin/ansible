@@ -1,5 +1,4 @@
 # {{ ansible_managed }}
-{% if matrix_openidc_providers is defined %}
 
 oidc_providers:
 {% for provider in matrix_openidc_providers %}
@@ -11,7 +10,7 @@ oidc_providers:
 {% if provider.idp_brand is defined %}
     idp_brand: "{{ provider.idp_brand }}"
 {% endif %}
-    discover: "{{ provider.discover | default('true') }}"
+    discover: {{ provider.discover | default(true) | bool | lower }}
     issuer: "{{ provider.issuer }}"
     client_id: "{{ provider.client_id }}"
 {% if provider.client_secret is defined %}
@@ -20,8 +19,8 @@ oidc_providers:
     client_secret_jwt_key: "{{ provider.client_secret_jwt_key }}"
 {% endif %}
     client_auth_method: "{{ provider.client_auth_method | default('client_secret_basic') }}"
-    scopes: "{{ provider.scopes }}"
-{% if provider.discover is 'false' %}
+    scopes: {{ provider.scopes }}
+{% if provider.discover == false %}
     authorization_endpoint: "{{ provider.authorization_endpoint }}"
     token_endpoint: "{{ provider.token_endpoint }}"
 {% if provider.userinfo_endpoint is defined %}
@@ -35,15 +34,23 @@ oidc_providers:
     skip_verification: "{{ provider.skip_verification }}"
 {% endif %}
     user_profile_method: "{{ provider.user_profile_method | default('auto') }}"
-    allow_existing_users: "{{ provider.allow_existing_users | default('false') }}"
+    allow_existing_users: {{ provider.allow_existing_users | default(false) | bool | lower }}
 {% if provider.user_mapping_provider is defined %}
     user_mapping_provider:
 {% for mapping_provider in provider.user_mapping_provider %}
         "{{ mapping_provider }}":
-          subject_claim: "{{ mapping_provider.subject_claim }}"
-          localpart_template: "{{ mapping_provider.localpart_template }}"
-          display_name_template: "{{ mapping_provider.display_name_template }}"
-          email_template: "{{ mapping_provider.email_template }}"
+{% if provider.user_mapping_provider[mapping_provider].subject_claim is defined %}
+          subject_claim: "{{ provider.user_mapping_provider[mapping_provider].subject_claim }}"
+{% endif %}
+{% if provider.user_mapping_provider[mapping_provider].localpart_template is defined %}
+          localpart_template: "{{ provider.user_mapping_provider[mapping_provider].localpart_template }}"
+{% endif %}
+{% if provider.user_mapping_provider[mapping_provider].display_name_template is defined %}
+          display_name_template: "{{ provider.user_mapping_provider[mapping_provider].display_name_template }}"
+{% endif %}
+{% if provider.user_mapping_provider[mapping_provider].email_template is defined %}
+          email_template: "{{ provider.user_mapping_provider[mapping_provider].email_template }}"
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if provider.attribute_requirements is defined %}
@@ -54,4 +61,3 @@ oidc_providers:
 {% endfor %}
 {% endif %}
 {% endfor %}
-{% endif %}
