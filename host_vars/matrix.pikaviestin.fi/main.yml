@@ -64,16 +64,13 @@ synapse_workers:
 matrix_openidc_providers:
   - idp_id: authentik
     idp_name: Authentik
-    discover: false
-    issuer: authentik
+    discover: true
+    issuer: "https://login.pikaviestin.fi/application/o/pikaviestin-matrix/"
     client_id: "52611cbe0a8e16c458026d4f7b3c966cd0acd549"
     client_secret: "{{ matrix_openidc_providers_authentik_client_secret }}"
     scopes:
       - "openid"
       - "profile"
-    authorization_endpoint: "https://login.pikaviestin.fi/application/o/authorize/"
-    token_endpoint: "https://login.pikaviestin.fi/application/o/token/"
-    userinfo_endpoint: "https://login.pikaviestin.fi/application/o/userinfo/"
     user_mapping_provider:
       config:
         localpart_template: "{{ '{{ user.username }}' }}"
