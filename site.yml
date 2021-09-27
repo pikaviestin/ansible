@@ -9,5 +9,5 @@
     - uumas.docker.docker       # Installs docker
     - nginx                     # Installs and configures nginx
     - matrix-synapse            # Installs and configures synapse
-    - docker
+    - docker                     # Installs Docker containers, currently only related to Authentik
 
