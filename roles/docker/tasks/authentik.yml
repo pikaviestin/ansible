@@ -15,8 +15,8 @@
 - name: Authentik server
   docker_container:
    name: authentik_server
-   image: beryju.org/authentik/server:gh-flow-inspect-1
-   pull: no
+   image: ghcr.io/goauthentik/server:stable
+   pull: yes
    command: server
    restart_policy: unless-stopped
    env:
@@ -43,8 +43,8 @@
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   image: beryju.org/authentik/server:gh-flow-inspect-1
-   pull: no
+   image: ghcr.io/goauthentik/server:stable
+   pull: yes
    command: worker
    restart_policy: unless-stopped
    # This is optional, and can be removed. If you remove this, the following will happen
