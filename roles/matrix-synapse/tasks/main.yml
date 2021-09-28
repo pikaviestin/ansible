@@ -24,7 +24,6 @@
     src: "conf.d/{{ item }}"
     dest: "/etc/matrix-synapse/conf.d/{{ item }}"
     mode: '644'
-    force: no
   loop:
     - database.yaml
     - general.yaml
@@ -43,14 +42,12 @@
     src: 'conf.d/autojoin.yaml'
     dest: '/etc/matrix-synapse/conf.d/autojoin.yaml'
     mode: '644'
-    force: no
   when: matrix_auto_join_rooms is defined
 - name: password provider config
   template:
     src: 'conf.d/password_providers.yaml'
     dest: '/etc/matrix-synapse/conf.d/password_providers.yaml'
     mode: '644'
-    force: no
   when: synapse_ldap_servers is defined or synapse_shared_secret_auth is defined
 - name: oidc provider config
   template:
