@@ -240,7 +240,7 @@ nginx_servers:
       - ip: 'all'
     name: "login.{{ matrix_domain }}"
     reverse_proxy:
-      - authentik_main
+      - authentik
   - listen:
       - ip: 'all'
       - ip: "{{ 'localhost' if matrix_extras is defined and synapse_workers is defined else '' }}"
