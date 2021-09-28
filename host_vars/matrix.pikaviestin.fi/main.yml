@@ -81,7 +81,7 @@ nginx:
     server_tokens: 'off'
 
 nginx_upstreams:
-  authentik_main:
+  authentik:
     servers:
       - 9000
     locations:
