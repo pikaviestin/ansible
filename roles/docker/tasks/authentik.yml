@@ -15,7 +15,8 @@
 - name: Authentik server
   docker_container:
    name: authentik_server
-   image: ghcr.io/goauthentik/server:stable
+   #image: ghcr.io/goauthentik/server:stable
+   image: beryju.org/authentik/server:gh-next
    pull: yes
    command: server
    restart_policy: unless-stopped
@@ -43,7 +44,8 @@
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   image: ghcr.io/goauthentik/server:stable
+   #image: ghcr.io/goauthentik/server:stable
+   image: beryju.org/authentik/server:gh-next
    pull: yes
    command: worker
    restart_policy: unless-stopped
