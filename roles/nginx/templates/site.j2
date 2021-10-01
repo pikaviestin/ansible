@@ -73,7 +73,7 @@ server {
 # Sipmle returns
 {% for return in server.return %}
 	location {{ return.location }} {
-		return {{ return.type | default('200') }} '{{ return.content }}';
+		return {{ return.type | default('200') }} '{{ return.content | to_json if return.content_type | default('plain') == 'json' else return.content }}';
 {% if return.headers is mapping %}
 {% for header in return.headers | dict2items %}
 		add_header {{ header.key }} {{ header.value }};

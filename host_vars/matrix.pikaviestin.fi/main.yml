@@ -250,9 +250,14 @@ nginx_servers:
         type: 301
         content: "{{ nginx_matrix_website_redirect }}"
       - location: '/.well-known/matrix/server'
-        content: " { \"m.server\": \"{{ matrix_server_domain }}\""
+        content_type: json
+        content:
+          m.server: "{{ matrix_server_domain }}"
       - location: '/.well-known/matrix/client'
-        content: " { \"m.homeserver\": { \"base_url\": \"{{ matrix_external_url }}\" } }"
+        content_type: json
+        content:
+          m.homeserver:
+            base_url: "{{ matrix_external_url }}"
         headers:
           Access-Control-Allow-Origin: "'*'"
     reverse_proxy:
@@ -288,9 +293,14 @@ nginx_servers:
         type: 301
         content: "{{ nginx_matrix_website_redirect }}"
       - location: '/.well-known/matrix/server'
-        content: " { \"m.server\": \"{{ matrix_server_domain }}\" }"
+        content_type: json
+        content:
+          m.server: "{{ matrix_server_domain }}"
       - location: '/.well-known/matrix/client'
-        content: " { \"m.homeserver\":  \"base_url\": \"{{ matrix_external_url }}\"  }"
+        content_type: json
+        content:
+          m.homeserver:
+            base_url: "{{ matrix_external_url }}"
         headers:
           Access-Control-Allow-Origin: "'*'"
 
