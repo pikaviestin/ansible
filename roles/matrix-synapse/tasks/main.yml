@@ -21,38 +21,32 @@
 
 - name: Put synapse configs in place
   template:
-    src: "conf.d/{{ item }}"
-    dest: "/etc/matrix-synapse/conf.d/{{ item }}"
+    src: "conf.d/{{ item }}.yaml.j2"
+    dest: "/etc/matrix-synapse/conf.d/{{ item }}.yaml"
     mode: '644'
   loop:
-    - database.yaml
-    - general.yaml
-    - listeners.yaml
-    - server_name.yaml
-    - url_preview.yaml
+    - database
+    - general
+    - listeners
+    - server_name
+    - url_preview
   notify: config matrix target
-- name: retention config
-  template:
-    src: 'conf.d/retention.yaml'
-    dest: '/etc/matrix-synapse/conf.d/retention.yaml'
-    mode: '644'
-  when: matrix.retention is defined
 - name: autojoin config
   template:
-    src: 'conf.d/autojoin.yaml'
+    src: 'conf.d/autojoin.yaml.j2'
     dest: '/etc/matrix-synapse/conf.d/autojoin.yaml'
     mode: '644'
   when: matrix_auto_join_rooms is defined
 - name: password provider config
   template:
-    src: 'conf.d/password_providers.yaml'
+    src: 'conf.d/password_providers.yaml.j2'
     dest: '/etc/matrix-synapse/conf.d/password_providers.yaml'
     mode: '644'
   when: synapse_ldap_servers is defined or synapse_shared_secret_auth is defined
-- name: oidc provider config
+- name: sso config
   template:
-    src: 'conf.d/oidc_providers.yaml'
-    dest: '/etc/matrix-synapse/conf.d/oidc_providers.yaml'
+    src: 'conf.d/sso.yaml.j2'
+    dest: '/etc/matrix-synapse/conf.d/sso.yaml'
     mode: '644'
   when: matrix_openidc_providers is defined
 
@@ -67,7 +61,7 @@
 - name: Put systemd units in place
   template:
     src: "systemd/{{ item }}"
-    dest: '/etc/systemd/system/{{ item }}'
+    dest: "/etc/systemd/system/{{ item }}"
     mode: '644'
   loop:
     - matrix-synapse.service
@@ -77,6 +71,11 @@
     - config matrix target
 
 - block:
+  - name: synapse-wide worker config
+    template:
+      src: 'conf.d/workers.yaml.j2'
+      dest: '/etc/matrix-synapse/conf.d/workers.yaml'
+
   - name: Install redis
     apt:
       name: redis-server

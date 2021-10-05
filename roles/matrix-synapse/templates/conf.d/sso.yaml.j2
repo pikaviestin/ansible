@@ -1,5 +1,8 @@
 # {{ ansible_managed }}
 
+password_config:
+  enabled: false
+
 oidc_providers:
 {% for provider in matrix_openidc_providers %}
   - idp_id: "{{ provider.idp_id }}"

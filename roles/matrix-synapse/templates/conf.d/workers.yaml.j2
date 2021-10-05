@@ -1,17 +1,5 @@
-# {{ ansible_managed }}
+---
 
-public_baseurl: '{{ matrix_external_url }}'
-admin_contact: '{{ synapse_admin_contact }}'
-max_upload_size: {{ matrix_max_upload_size_mb }}M
-enable_registration: false
-allow_public_rooms_over_federation: true
-registration_shared_secret: '{{ matrix_registration_shared_secret }}'
-enable_group_creation: true
-enable_metrics: {{ synapse_metrics }}
-use_presence: {{ synapse_presence }}
-{% if synapse_workers is defined %}
-
-# Workers
 redis:
   enabled: true
 {% if 'appservice' in synapse_workers %}
@@ -53,5 +41,4 @@ federation_sender_instances:
 {% endfor %}
 {% endif %}
 
-{% endif %}
 {% endif %}
