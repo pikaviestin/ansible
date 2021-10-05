@@ -52,8 +52,8 @@ map $http_upgrade $connection_upgrade {
 
 {% for server in nginx_servers %}
 server {
-{% for listener in server.listen %}
-{% if listener.ip == 'all' %}
+{% for listener in server.listen | default([{}]) %}
+{% if listener.ip | default('all') == 'all' %}
 	listen        0.0.0.0:{{ listener.port | default('443' if nginx_certbot else '80') }} {{ 'ssl http2 ' if nginx_certbot else '' }}{{ 'default_server' if server.name is not defined or server.name == ansible_fqdn }};
 {% if ansible_default_ipv6.address is defined %}
 	listen        [::]:{{ listener.port | default('443' if nginx_certbot else '80') }} {{ 'ssl http2 ' if nginx_certbot else '' }}{{ 'default_server' if server.name is not defined or server.name == ansible_fqdn }};
@@ -89,7 +89,7 @@ server {
 {% if nginx_upstreams[upstream].servers | length != 0 %}
 
 # {{ upstream }}
-{% for location in nginx_upstreams[upstream].locations %}
+{% for location in nginx_upstreams[upstream].locations | default([{'name': '/'}]) %}
 
 {% if location.name | length != 0 %}
 	location {{ location.name }} {

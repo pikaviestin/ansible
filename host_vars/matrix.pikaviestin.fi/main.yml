@@ -1,5 +1,10 @@
 ---
 
+ports:
+  element_http: 28001
+
+reverse_proxy_type: nginx
+
 matrix_domain: pikaviestin.fi
 matrix_server_domain: matrix.pikaviestin.fi
 matrix_external_url: https://{{ matrix_server_domain }}
@@ -84,8 +89,9 @@ nginx_upstreams:
   authentik:
     servers:
       - 9000
-    locations:
-      - name: '/'
+  element:
+    servers:
+      - "{{ ports.element_http }}"
   synapse_main:
     servers:
       - 8008
@@ -236,11 +242,12 @@ nginx_maps:
           - 'proxy_read_timeout 1h'
 
 nginx_servers:
-  - listen:
-      - ip: 'all'
-    name: "login.{{ matrix_domain }}"
+  - name: "login.{{ matrix_domain }}"
     reverse_proxy:
       - authentik
+  - name: chat.pikaviestin.fi
+    reverse_proxy:
+      - element
   - listen:
       - ip: 'all'
       - ip: "{{ 'localhost' if matrix_extras is defined and synapse_workers is defined else '' }}"
@@ -278,16 +285,13 @@ nginx_servers:
     reverse_proxy_map:
       - sync
   - listen:
-      - ip: 'all'
-        port: 8448
+      - port: 8448
     reverse_proxy:
       - synapse_main
       - synapse_media_repository
       - synapse_generic_federation
       - synapse_generic_federation_send
-  - listen:
-      - ip: all
-    name: "{{ matrix_domain }}"
+  - name: "{{ matrix_domain }}"
     return:
       - location: '/'
         type: 301
