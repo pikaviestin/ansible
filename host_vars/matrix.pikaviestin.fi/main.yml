@@ -21,7 +21,7 @@ authentik_email_use_tls: 'true'
 authentik_log_level: debug
 
 matrix_auto_join_rooms:
-  - '#hub:matrix.ax'
+  - '#hub:pikaviestin.fi'
 
 nginx_matrix_website_redirect: https://www.pikaviestin.fi
 
@@ -73,8 +73,8 @@ matrix_openidc_providers:
       - "profile"
     user_mapping_provider:
       config:
-        localpart_template: "{{ '{{ user.name }}' }}"
-        display_name_template: "{{ '{{ user.name|capitalize }}' }}"
+        localpart_template: "{{ '{{ user.preferred_username }}' }}"
+        display_name_template: "{{ '{{ user.preferred_username|capitalize }}' }}"
 
 nginx:
   http:
