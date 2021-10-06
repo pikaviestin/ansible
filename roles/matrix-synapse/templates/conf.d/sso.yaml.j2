@@ -3,6 +3,14 @@
 password_config:
   enabled: false
 
+{% if synapse_sso_client_whitelist is defined %}
+sso:
+  client_whitelist:
+{% for client in synapse_sso_client_whitelist %}
+    - {{ client }}
+{% endfor %}
+{% endif %}
+
 oidc_providers:
 {% for provider in matrix_openidc_providers %}
   - idp_id: "{{ provider.idp_id }}"
