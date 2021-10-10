@@ -10,3 +10,9 @@ Run ansible: `ansible-playbook -D site.yml`
 This application allows the environment be changed when entering the directory, currently has to do with the Bitwarden thing.
 
 Reference: https://direnv.net/
+
+# go-task
+
+The Taskfiles are related to this utility.
+
+Reference: https://taskfile.dev/#/installation

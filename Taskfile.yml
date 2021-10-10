@@ -1,0 +1,11 @@
+---
+version: "3"
+
+vars:
+  PROJECT_DIR:
+    sh: "git rev-parse --show-toplevel"
+  ANSIBLE_DIR: "{{.PROJECT_DIR}}"
+
+includes:
+  ansible: .taskfiles/ansible.yml
+  pre-commit: .taskfiles/pre-commit.yml
