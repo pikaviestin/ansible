@@ -23,7 +23,6 @@ authentik_email_from: 'yllapito@pikaviestin.fi'
 authentik_email_host: 'mail.kapsi.fi'
 authentik_email_port: '587'
 authentik_email_use_tls: 'true'
-authentik_log_level: debug
 
 matrix_auto_join_rooms:
   - '#hub:pikaviestin.fi'
