@@ -1,0 +1,10 @@
+---
+
+- name: Cinny Container
+  docker_container:
+   name: cinny
+   image: ajbura/cinny
+   pull: yes
+   restart_policy: unless-stopped
+   ports:
+    - "127.0.0.1:28002:80"
