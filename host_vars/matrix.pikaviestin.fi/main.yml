@@ -45,6 +45,7 @@ matrix_openidc_providers:
 
 synapse_sso_client_whitelist:
   - https://chat.pikaviestin.fi/
+  - https://cinny.pikaviestin.fi/
 
 nginx_matrix_website_redirect: https://www.pikaviestin.fi
 
