@@ -2,6 +2,7 @@
 
 ports:
   element_http: 28001
+  cinny_http: 28002
 
 reverse_proxy_type: nginx
 
@@ -94,6 +95,9 @@ nginx_upstreams:
   element:
     servers:
       - "{{ ports.element_http }}"
+  cinny:
+    servers:
+      - "{{ ports.cinny_http }}"
   synapse_main:
     servers:
       - 8008
@@ -247,9 +251,12 @@ nginx_servers:
   - name: "login.{{ matrix_domain }}"
     reverse_proxy:
       - authentik
-  - name: chat.pikaviestin.fi
+  - name: "chat.{{ matrix_domain }}"
     reverse_proxy:
       - element
+  - name: "cinny.{{ matrix_domain }}"
+    reverse_proxy:
+      -  cinny
   - listen:
       - ip: 'all'
       - ip: "{{ 'localhost' if matrix_extras is defined and synapse_workers is defined else '' }}"
