@@ -3,7 +3,7 @@
 - name: Cinny Container
   docker_container:
    name: cinny
-   image: ajbura/cinny
+   image: ghcr.io/matrix-ax/cinny:dev
    pull: yes
    restart_policy: unless-stopped
    ports:
