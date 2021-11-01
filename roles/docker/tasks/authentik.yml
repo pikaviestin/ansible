@@ -1,10 +1,15 @@
 ---
 
+- name: Authentik network
+  docker_network:
+   name: authentik
 - name: Authentik redis
   docker_container:
    name: authentik_redis
    image: redis:alpine
    restart_policy: unless-stopped
+   networks:
+    - name: authentik
 
 - name: Authentik server
   docker_container:
@@ -32,6 +37,8 @@
     - /opt/docker/appdata/authentik/media:/media
    ports:
     - "127.0.0.1:9000:9000"
+   networks:
+    - name: authentik
 
 - name: Authentik worker
   docker_container:
@@ -63,3 +70,5 @@
     - /opt/docker/appdata/authentik/media:/media
     - /opt/docker/appdata/authentik/templates:/templates
     - /var/run/docker.sock:/var/run/docker.sock
+   networks:
+    - name: authentik
