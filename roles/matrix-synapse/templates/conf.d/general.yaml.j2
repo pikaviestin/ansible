@@ -9,5 +9,6 @@ registration_shared_secret: '{{ matrix_registration_shared_secret }}'
 enable_group_creation: true
 enable_metrics: {{ synapse_metrics }}
 use_presence: {{ synapse_presence }}
+enable_media_repo: {{ matrix_media_repo_server is not defined }}
 retention:
   enabled: true

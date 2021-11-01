@@ -9,7 +9,9 @@ matrix_domain: pikaviestin.fi
 matrix_server_domain: matrix.pikaviestin.fi
 matrix_external_url: https://{{ matrix_server_domain }}
 
-matrix_max_upload_size_mb: 100
+matrix_max_upload_size_mb: 200
+
+matrix_media_repo_server: matrix-media.n.kapsi.fi
 
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: yes
@@ -79,8 +81,6 @@ synapse_workers:
     - 8071
   user_dir:
     - 8076
-  media_repository:
-    - 8081
   frontend_proxy:
     - 8092
 
@@ -100,10 +100,21 @@ nginx_upstreams:
       - 8008
     locations:
       - name: '/_matrix'
-      - name: "{{ '/_matrix/media/' if 'media_repository' not in synapse_workers | default('') else '' }}"
+      - name: "{{ '/_matrix/media/' if matrix_media_repo_server is not defined and 'media_repository' not in synapse_workers | default('') else '' }}"
         additional_options:
           - 'proxy_hide_header Content-Security-Policy'
           - "add_header Content-Security-Policy \"default-src 'self'; script-src 'self'; plugin-types application/pdf; style-src 'unsafe-inline'; object-src 'self';\" always"
+          - "client_max_body_size {{ matrix_max_upload_size_mb }}M"
+  matrix_media_repo:
+    servers:
+      - "{{ matrix_media_repo_server + ':9000' if matrix_media_repo_server is defined else '' }}"
+    locations:
+      - name: '/_matrix/media'
+        proxy_headers:
+          Host: "{{ matrix_domain }}"
+        additional_options:
+#          - 'proxy_hide_header Content-Security-Policy'
+#          - "add_header Content-Security-Policy \"default-src 'self'; script-src 'self'; plugin-types application/pdf; style-src 'unsafe-inline'; object-src 'self';\" always"
           - "client_max_body_size {{ matrix_max_upload_size_mb }}M"
   synchrotron_balancer:
     servers: "{{ ['8183'] if synapse_workers.generic_sync is defined else '' }}"
@@ -272,6 +283,7 @@ nginx_servers:
           Access-Control-Allow-Origin: "'*'"
     reverse_proxy:
       - synapse_main
+      - matrix_media_repo
       - synapse_media_repository
       - synapse_generic_client
       - synapse_generic_login
@@ -291,6 +303,7 @@ nginx_servers:
       - port: 8448
     reverse_proxy:
       - synapse_main
+      - matrix_media_repo
       - synapse_media_repository
       - synapse_generic_federation
       - synapse_generic_federation_send

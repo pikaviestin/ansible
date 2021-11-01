@@ -8,8 +8,12 @@ upstream {{ upstream.key }} {
 {% if upstream.value.method is defined %}
 	{{ upstream.value.method }};
 {% endif %}
-{% for port in upstream.value.servers %}
-	server 127.0.0.1:{{ port }};
+{% for server in upstream.value.servers %}
+{% if server | int != 0 %}
+	server 127.0.0.1:{{ server }};
+{% else %}
+	server {{ server }};
+{% endif %}
 {% endfor %}
 }
 
@@ -94,9 +98,16 @@ server {
 {% if location.name | length != 0 %}
 	location {{ location.name }} {
 		proxy_pass http://{{ upstream }};
+{% if location.proxy_headers is mapping %}
+{% for header in location.proxy_headers | dict2items %}
+		proxy_set_header {{ header.key }} {{ header.value }};
+{% endfor %}
+{% endif %}
 {% if nginx_proxy_headers is mapping %}
 {% for header in nginx_proxy_headers | dict2items %}
+{% if location.proxy_headers[header.key] is not defined %}
 		proxy_set_header {{ header.key }} {{ header.value }};
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if location.additional_options is defined %}
