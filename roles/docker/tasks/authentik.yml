@@ -1,22 +1,16 @@
 ---
 
-- name: Authentik network
-  docker_network:
-   name: authentik
-
 - name: Authentik redis
   docker_container:
    name: authentik_redis
    image: redis:alpine
    restart_policy: unless-stopped
-   networks:
-    - name: authentik
 
 - name: Authentik server
   docker_container:
    name: authentik_server
-   #image: ghcr.io/goauthentik/server:stable
-   image: ghcr.io/goauthentik/server:2021.10.1-rc2
+   image: ghcr.io/goauthentik/server:stable # Currently 2021.10.1
+   #image: ghcr.io/goauthentik/server:2021.10.1-rc2
    pull: yes
    command: server
    restart_policy: unless-stopped
@@ -36,16 +30,14 @@
    volumes:
     - /opt/docker/appdata/authentik/templates:/templates
     - /opt/docker/appdata/authentik/media:/media
-   networks:
-    - name: authentik
    ports:
     - "127.0.0.1:9000:9000"
 
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   #image: ghcr.io/goauthentik/server:stable
-   image: ghcr.io/goauthentik/server:2021.10.1-rc2
+   image: ghcr.io/goauthentik/server:stable # Currently 2021.10.1
+   #image: ghcr.io/goauthentik/server:2021.10.1-rc2
    pull: yes
    command: worker
    restart_policy: unless-stopped
@@ -71,5 +63,3 @@
     - /opt/docker/appdata/authentik/media:/media
     - /opt/docker/appdata/authentik/templates:/templates
     - /var/run/docker.sock:/var/run/docker.sock
-   networks:
-    - name: authentik
