@@ -2,6 +2,7 @@
 
 ports:
   element_http: 28001
+  cinny_http: 28002
 
 reverse_proxy_type: nginx
 
@@ -25,7 +26,6 @@ authentik_email_from: 'yllapito@pikaviestin.fi'
 authentik_email_host: 'mail.kapsi.fi'
 authentik_email_port: '587'
 authentik_email_use_tls: 'true'
-authentik_log_level: debug
 
 matrix_auto_join_rooms:
   - '#hub:pikaviestin.fi'
@@ -47,6 +47,7 @@ matrix_openidc_providers:
 
 synapse_sso_client_whitelist:
   - https://chat.pikaviestin.fi/
+  - https://cinny.pikaviestin.fi/
 
 nginx_matrix_website_redirect: https://www.pikaviestin.fi
 
@@ -95,6 +96,9 @@ nginx_upstreams:
   element:
     servers:
       - "{{ ports.element_http }}"
+  cinny:
+    servers:
+      - "{{ ports.cinny_http }}"
   synapse_main:
     servers:
       - 8008
@@ -259,9 +263,12 @@ nginx_servers:
   - name: "login.{{ matrix_domain }}"
     reverse_proxy:
       - authentik
-  - name: chat.pikaviestin.fi
+  - name: "chat.{{ matrix_domain }}"
     reverse_proxy:
       - element
+  - name: "cinny.{{ matrix_domain }}"
+    reverse_proxy:
+      -  cinny
   - listen:
       - ip: 'all'
       - ip: "{{ 'localhost' if matrix_extras is defined and synapse_workers is defined else '' }}"
