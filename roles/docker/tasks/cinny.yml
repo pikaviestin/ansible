@@ -1,10 +1,21 @@
 ---
+- name: Create cinny appdata directory
+  file:
+   path: /opt/docker/appdata/cinny
+   state: directory
+
+- name: Copy Cinny hs config
+  template:
+   src: config.json
+   dest: /opt/docker/appdata/cinny/config.json
 
 - name: Cinny Container
   docker_container:
    name: cinny
-   image: ghcr.io/matrix-ax/cinny:dev
+   image: ajbura/cinny:v1.5.0
    pull: yes
    restart_policy: unless-stopped
+   volumes:
+    - /opt/docker/appdata/cinny/config.json:/app/config.json
    ports:
     - "127.0.0.1:28002:80"

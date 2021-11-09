@@ -1,0 +1,7 @@
+{
+  "defaultHomeserver": 1,
+  "homeserverList": [
+      "kapsi.fi",
+      "pikaviestin.fi"
+  ]
+}
