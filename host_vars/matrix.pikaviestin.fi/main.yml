@@ -23,12 +23,13 @@ synapse_psql_user: matrix_ax
 authentik_psql_host: psql1.n.kapsi.fi
 authentik_psql_user: matrix_ax_authentik
 authentik_email_from: 'yllapito@pikaviestin.fi'
-authentik_email_host: 'mail.kapsi.fi'
+authentik_email_host: 'mailserv.kapsi.fi'
 authentik_email_port: '587'
 authentik_email_use_tls: 'true'
 
 matrix_auto_join_rooms:
-  - '#hub:pikaviestin.fi'
+  - '#aula:pikaviestin.fi'
+  - '#matrix-suomi:kapsi.fi'
 
 matrix_openidc_providers:
   - idp_id: authentik
