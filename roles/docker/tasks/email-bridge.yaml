@@ -3,7 +3,7 @@
 - name: Matrix Email Bridge Container
   docker_container:
    name: email_bridge
-   image: jojii/matrix_email_bridge:v1.0.1
+   image: ghcr.io/matrix-ax/matrix-emailbridge:latest
    pull: yes
    restart_policy: unless-stopped
    network_mode: host
