@@ -22,6 +22,8 @@
    env:
     AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
     AUTHENTIK_EMAIL__HOST: "{{ authentik_email_host }}"
+    AUTHENTIK_EMAIL__USERNAME: "{{ authentik_email_username }}"
+    AUTHENTIK_EMAIL__PASSWORD: "{{ authentik_email_password }}"
     AUTHENTIK_EMAIL__PORT: "{{ authentik_email_port }}"
     AUTHENTIK_EMAIL__USE_TLS: "{{ authentik_email_use_tls }}"
     AUTHENTIK_EMAIL__TIMEOUT: '10'
@@ -55,6 +57,8 @@
    env:
     AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
     AUTHENTIK_EMAIL__HOST: "{{ authentik_email_host }}"
+    AUTHENTIK_EMAIL__USERNAME: "{{ authentik_email_username }}"
+    AUTHENTIK_EMAIL__PASSWORD: "{{ authentik_email_password }}"
     AUTHENTIK_EMAIL__PORT: "{{ authentik_email_port }}"
     AUTHENTIK_EMAIL__USE_TLS: "{{ authentik_email_use_tls }}"
     AUTHENTIK_EMAIL__TIMEOUT: '10'
