@@ -1,0 +1,11 @@
+---
+
+- name: Matrix Email Bridge Container
+  docker_container:
+   name: email_bridge
+   image: jojii/matrix_email_bridge:v1.0.1
+   pull: yes
+   restart_policy: unless-stopped
+   network_mode: host
+   volumes:
+    - /opt/docker/appdata/emailbrdige:/app/data

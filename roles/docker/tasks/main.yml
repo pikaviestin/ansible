@@ -2,3 +2,4 @@
 
 - include_tasks: authentik.yml
 - include_tasks: cinny.yml
+- include_tasks: email-bridge.yaml
