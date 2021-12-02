@@ -12,3 +12,5 @@ use_presence: {{ synapse_presence }}
 enable_media_repo: {{ matrix_media_repo_server is not defined }}
 retention:
   enabled: true
+  allowed_lifetime_min: 30m
+  allowed_lifetime_max: 3y
