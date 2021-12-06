@@ -39,6 +39,7 @@
     - /opt/docker/appdata/authentik/media:/media
    ports:
     - "127.0.0.1:9000:9000"
+    - "10.0.199.42:9300:9300"
    networks:
     - name: authentik
 
