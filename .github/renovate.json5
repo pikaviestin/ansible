@@ -1,0 +1,47 @@
+{
+  "enabled": true,
+  "timezone": "Europe/Helsinki",
+  "semanticCommits": "enabled",
+  "dependencyDashboard": false,
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  // do not notify on closed unmerged PRs
+  "suppressNotifications": ["prIgnoreNotification"],
+  // only rebase PRs when there's a conflict
+  "rebaseWhen": "conflicted",
+  "packageRules": [
+    // Setup datasources
+    {
+      "matchDatasources": ["docker"],
+      "enabled": true,
+      "commitMessageTopic": "container image {{depName}}",
+      "commitMessageExtra": "to {{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}",
+      "matchUpdateTypes": ["major", "minor", "patch"],
+    },
+    {
+      "matchDatasources": ["docker"],
+      "semanticCommitScope": "images",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{{newValue}}}",
+      "separateMinorPatch": true,
+    },
+    // Add labels according to package and update types
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(images)!: ",
+      "labels": ["renovate/image", "dep/major"],
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "labels": ["renovate/image", "dep/minor"],
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "labels": ["renovate/image", "dep/patch"],
+    },
+  ],
+}
