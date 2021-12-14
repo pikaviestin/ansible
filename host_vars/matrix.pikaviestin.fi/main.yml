@@ -91,6 +91,8 @@ synapse_workers:
 nginx:
   http:
     server_tokens: 'off'
+  ssl:
+    ssl_protocols: 'TLSv1.2 TLSv1.3'
 
 nginx_upstreams:
   authentik:
