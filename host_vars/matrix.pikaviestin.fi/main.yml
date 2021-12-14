@@ -93,6 +93,7 @@ nginx:
     server_tokens: 'off'
   ssl:
     ssl_protocols: 'TLSv1.2 TLSv1.3'
+    ssl_prefer_server_ciphers: 'on'
 
 nginx_upstreams:
   authentik:
