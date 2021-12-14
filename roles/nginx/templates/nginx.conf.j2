@@ -34,7 +34,7 @@ http {
         # SSL Settings
         ##
 
-{% if nginx.http.ssl is defined %}
+{% if nginx.ssl is defined %}
         ssl_protocols {{ nginx.ssl.ssl_protocols }};
         ssl_prefer_server_ciphers {{ nginx.ssl.ssl_prefer_server_ciphers }};
 {% else %}
