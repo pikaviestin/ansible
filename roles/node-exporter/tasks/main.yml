@@ -1,0 +1,44 @@
+---
+ - name: install node_exporter
+   package:
+       name: prometheus-node-exporter
+       state: latest
+   when:
+       - ansible_distribution == "Debian"
+       - ansible_distribution_major_version|int >= 9
+
+ - name: add group proc
+   group:
+     name: proc
+     gid: 98
+     state: present
+     system: yes
+
+ - name: add prometheus user to proc group
+   user:
+       name: prometheus
+       groups: proc
+       append: yes
+   when:
+       - ansible_distribution == "Debian"
+       - ansible_distribution_major_version|int >= 9
+
+ - name: systemctl daemon-reload
+   systemd:
+       daemon_reload: yes
+   when:
+       - ansible_distribution == "Debian"
+       - ansible_distribution_major_version|int >= 9
+
+ - name: throw in /etc/default/prometheus-node-exporter
+   template:
+       src: templates/prometheus-node-exporter.j2
+       dest: /etc/default/prometheus-node-exporter
+       owner: root
+       group: root
+       mode: 0644
+   notify:
+       - restart node-exporter
+   when:
+       - ansible_distribution == "Debian"
+       - ansible_distribution_major_version|int >= 9
