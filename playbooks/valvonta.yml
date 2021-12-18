@@ -1,0 +1,10 @@
+---
+- hosts: valvonta.pikaviestin.fi
+  become: yes
+  roles:
+    - role: nginx
+      tags: nginx
+    - role: cloudalchemy.grafana
+      tags: grafana
+    - role: cloudalchemy.prometheus
+      tags: prom
