@@ -1,11 +1,15 @@
 ---
 
-- hosts: matrix.pikaviestin.fi
+- hosts: all
   become: yes
   roles:
     - uumas.general.packages    # Installs useful packages
     - uumas.general.ssh         # Configures sshd
     - uumas.general.users       # Creates users
+
+- hosts: matrix.pikaviestin.fi
+  become: yes
+  roles:
     - nginx                     # Installs and configures nginx
     - matrix-synapse            # Installs and configures synapse
     - uumas.docker.docker       # Installs docker
