@@ -1,7 +1,0 @@
----
- - hosts: all
-   strategy: free
-   gather_facts: no
-   tasks:
-       - name: :D
-         ping:

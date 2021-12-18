@@ -2,5 +2,4 @@
 - hosts: docker.pikaviestin.fi
   become: yes
   roles:
-    - uumas.docker.docker
     - uumas.docker.element
