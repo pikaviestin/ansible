@@ -11,10 +11,25 @@ tasks:
     cmds:
       - "ansible-galaxy install -r requirements.yml --force"
 
-  run:
+  run-matrix:
     desc: Run ansible-playbook
     cmds:
-      - "ansible-playbook -D site.yml"
+      - "ansible-playbook -D playbooks/matrix.yml"
+
+  run-all:
+    desc: Run all playbook
+    cmds:
+      - "ansible-playbook -D playbooks/all.yml"
+
+  run-docker:
+    desc: Run docker playbook
+    cmds:
+      - "ansible-playbook -D playbooks/docker.yml"
+
+  run-valvonta:
+    desc: Run valvonta playbook
+    cmds:
+      - "ansible-playbook -D playbooks/valvonta.yml"
 
   list:
     desc: List all the hosts
