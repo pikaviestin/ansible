@@ -1,0 +1,57 @@
+ports:
+  grafana_http: 3000
+  prometheus_http: 9090
+
+# Grafana related
+grafana_use_provisioning: true
+grafana_version: 8.3.3
+grafana_url: https://{{ ansible_host }}/grafana/
+grafana_auth:
+  signout_redirect_url: https://login.pikaviestin.fi/application/o/grafana/end-session/
+  disable_login_form: true
+  oauth_auto_login: true
+  generic_auth:
+    enabled: true
+    client_id: 135e5017f52b164503357316c701cec702c100d4
+    client_secret: "{{ SECRET_OAUTH_GRAFANA }}"
+    scopes: openid email profile
+    auth_url: https://login.pikaviestin.fi/application/o/authorize/
+    token_url: https://login.pikaviestin.fi/application/o/token/
+    api_url: https://login.pikaviestin.fi/application/o/userinfo/
+    role_attribute_path: contains(groups[*] 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor'
+
+grafana_datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    url: 'http://127.0.0.1:9090'
+
+
+# Prometheus
+prometheus_version: 2.32.0
+prometheus_web_listen_address: "127.0.0.1:9090"
+prometheus_web_external_url: "{{ ansible_host }}/prom/"
+
+# nginx
+nginx:
+  http:
+    server_tokens: 'off'
+  ssl:
+    ssl_protocols: 'TLSv1.2 TLSv1.3'
+    ssl_prefer_server_ciphers: 'on'
+
+nginx_upstreams:
+  grafana:
+    location: "/grafana/"
+    servers:
+      - "{{ ports.grafana_http }}"
+  prometheus:
+    location: "/prom/"
+    servers:
+      - "{{ ports.prometheus_http }}"
+
+nginx_servers:
+  - name: "{{ ansible_host }}"
+    reverse_proxy:
+      - grafana
+      - prometheus
