@@ -1,0 +1,4 @@
+# remember to run
+# git config --global diff.ansible-vault.textconv "ansible-vault view"
+#
+vault.yml diff=ansible-vault merge=binary
