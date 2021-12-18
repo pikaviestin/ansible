@@ -17,5 +17,7 @@
    restart_policy: unless-stopped
    volumes:
     - /opt/docker/appdata/cinny/config.json:/app/config.json
-   ports:
-    - "127.0.0.1:28002:80"
+   labels:
+    traefik.enable: "true"
+    traefik.http.routers.cinny-rtr.entrypoints: "websecure"
+    traefik.http.routers.cinny-rtr.rule: Host("cinny.pikaviestin.fi")

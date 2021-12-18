@@ -38,9 +38,15 @@
     - /opt/docker/appdata/authentik/media:/media
    ports:
     - "127.0.0.1:9000:9000"
-    - "10.0.199.42:9300:9300"
    networks:
     - name: authentik
+    - name: traefik_proxy
+   labels:
+    traefik.enable: "true"
+    traefik.http.routers.authentik-rtr.entrypoints: "websecure"
+    traefik.http.routers.authentik-rtr.rule: Host("login.pikaviestin.fi")
+    traefik.http.routers.authentik-rtr.service: authentik-svc
+    traefik.http.services.authentik-svc.loadbalancer.server.port: "9000"
 
 - name: Authentik worker
   docker_container:

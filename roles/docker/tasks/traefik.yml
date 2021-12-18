@@ -1,0 +1,93 @@
+---
+- name: Check Traefik appdata dir
+  stat:
+    path: /opt/docker/appdata/traefik
+  register: traefik_appdata
+
+- name: Create Traefik appdata directory
+  file:
+   path: /opt/docker/appdata/traefik
+   state: directory
+  when: not traefik_appdata.stat.exists
+
+- name: Check traefik rules dir
+  stat:
+    path: /opt/docker/appdata/traefik/rules
+  register: traefik_appdata_rules
+
+- name: Create Traefik rules directory
+  file:
+    path: /opt/docker/appdata/traefik/rules
+    state: directory
+  when: not traefik_appdata_rules.stat.exists
+
+- name: Check Traefik acme dir
+  stat:
+    path: /opt/docker/appdata/traefik/acme
+  register: traefik_appdata_acme
+
+- name: Create Traefik acme directory
+  file:
+    path: /opt/docker/appdata/traefik/acme/
+    state: directory
+  when: not traefik_appdata_acme.stat.exists
+
+- name: Check that acme file exists for Letsencrypt
+  stat:
+    path: /opt/docker/appdata/traefik/acme/acme-le.json
+  register: traefik_appdata_acme_file
+
+- name: Create traefik acme file
+  file:
+    path: /opt/docker/appdata/traefik/acme/acme-le.json
+    state: file
+    mode: 644
+  when: not traefik_appdata_acme_file.stat.exists
+
+- name: Traefik Proxy network
+  docker_network:
+   name: traefik_proxy
+   internal: true
+
+- name: Traefik conntainer
+  docker_container:
+    name: traefik
+    hostname: traefik
+    image: traefik:latest
+    network_mode: host
+    restart_policy: unless-stopped
+    command:
+      - --global.checkNewVersion=true
+      - --global.sendAnonymousUsage=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.certresolver=le
+      - --entrypoints.websecure.http.tls.domains[0].main=login.pikaviestin.fi
+      - --entrypoints.websecure.http.tls.domains[0].sans=cinny.pikaviestin.fi,chat.pikaviestin.fi
+      - --api=true
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --log=true
+      - --log.level=ERROR
+      - --accessLog=true
+      - --accessLog.filePath=/logs/traefik.log
+      - --accessLog.bufferingSize=100
+      - --accessLog.filters.statusCodes=400-499,500
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=traefik_proxy
+      - --providers.docker.swarmMode=false
+      - --providers.file.directory=/config/rules
+      - --providers.file.watch=true
+      - --certificatesResolvers.le.acme.email={{ certbot_admin_email }}
+      - --certificatesResolvers.le.acme.storage=/config/acme/acme-le.json
+      - --certificatesResolvers.le.acme.keyType=EC384
+      - --certificatesResolvers.le.acme.tlsChallenge
+    volumes:
+      - /opt/docker/appdata/traefik:/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+ #   labels:
+ #     - "traefik.enable"
+ #     - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
+ #     - "traefik.http.routers.traefik-rtr.rule=Host('docker.pikaviestin.fi') && Path('/traefik/')"
+ #     - "traefik.http.routers.traefik-rtr.priority=10"
