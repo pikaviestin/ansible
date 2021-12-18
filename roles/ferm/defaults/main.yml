@@ -1,4 +1,0 @@
----
-ferm_enabled: yes
-ferm_ipv6: yes
-ferm_raw_table: yes
