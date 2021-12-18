@@ -15,6 +15,7 @@
   community.crypto.x509_certificate_info:
     path: /etc/letsencrypt/live/{{ ansible_fqdn }}/cert.pem
   register: certinfo
+  when: cert.stat.exists or certbot_regenerate
 
 - name: Set fact to regenerate certificates if new domains are added
   set_fact:
