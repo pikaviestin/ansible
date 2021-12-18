@@ -1,0 +1,50 @@
+---
+
+- name: install ferm package
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    install_recommends: no
+    force_apt_get: yes
+  vars:
+    packages:
+      - ferm
+
+- name: ensure firewall rule directories
+  file:
+    state: directory
+    path: "{{ item }}"
+  with_items:
+    - /etc/ferm/ferm.d
+    - /etc/ferm/input.d
+    - /etc/ferm/output.d
+
+- name: base firewall rules
+  template:
+    src: "base_profiles/{{ ferm_profiled_profile }}.j2"
+    dest: /etc/ferm/ferm.conf
+  notify: handle_ferm_changes
+
+- name: additional profiles (ferm.d)
+  template:
+    src: "ferm.d/{{ ferm_profiled_profile }}.j2"
+    dest: /etc/ferm/ferm.d/{{ item }}.conf
+  when: ferm_profiled_additional_ferm_d is defined
+  with_items: "{{ ferm_profiled_additional_ferm_d }}"
+  notify: handle_ferm_changes
+
+- name: additional profiles (input.d)
+  template:
+    src: "ferm.input.d/{{ item }}.j2"
+    dest: /etc/ferm/input.d/{{ item }}.conf
+  when: ferm_profiled_additional_input_d is defined
+  with_items: "{{ ferm_profiled_additional_input_d }}"
+  notify: handle_ferm_changes
+
+- name: additional profiles (output.d)
+  template:
+    src: "ferm.output.d/{{ item }}.j2"
+    dest: /etc/ferm/output.d/{{ item }}.conf
+  when: ferm_profiled_additional_output_d is defined
+  with_items: "{{ ferm_profiled_additional_output_d }}"
+  notify: handle_ferm_changes

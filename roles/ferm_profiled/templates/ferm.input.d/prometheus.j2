@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for monitoring_ip_address in monitoring_ip_addresses %}
+proto tcp dport 9100 saddr {{ monitoring_ip_address }} ACCEPT;
+{% endfor %}

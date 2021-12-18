@@ -1,0 +1,16 @@
+# {{ ansible_managed }}
+
+# Matrix federation https
+proto tcp dport 8448 ACCEPT;
+
+{% if synapse_metrics | default(False) %}
+# Synapse prometheus metrics
+{% for monitoring_ip_address in monitoring_ip_addresses %}
+proto tcp dport 9656 saddr {{ monitoring_ip_address }} ACCEPT;
+{% if synapse_workers is defined %}
+{% for worker_port in synapse_workers|map('extract', synapse_workers)|flatten %}
+proto tcp dport {{ worker_port + 1000 }} saddr {{ monitoring_ip_address }} ACCEPT;
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

@@ -1,0 +1,6 @@
+---
+
+- import_tasks: ferm.yml
+  when: ferm_profiled_profile is defined
+
+- meta: flush_handlers

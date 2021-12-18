@@ -1,0 +1,50 @@
+#jinja2: lstrip_blocks: "True"
+# {{ ansible_managed }}
+
+domain (ip ip6) {
+    table filter {
+        chain INPUT {
+            policy DROP;
+            mod state state (ESTABLISHED RELATED) ACCEPT;
+            interface lo ACCEPT;
+            proto icmp ACCEPT;
+
+            # Warning: Do not open TCP ports before this statement!
+            proto tcp mod state state NEW tcp-flags ! (FIN SYN RST ACK) SYN @subchain "newstate-throttle" {
+                mod limit limit 100/sec limit-burst 200 RETURN;
+                DROP;
+            }
+
+            proto tcp dport ssh ACCEPT;
+
+            @include input.d/;
+        }
+        chain OUTPUT {
+            policy ACCEPT;
+            outerface lo ACCEPT;
+
+            @include output.d/;
+
+            mod state state (ESTABLISHED RELATED) ACCEPT;
+            
+        }
+        chain FORWARD {
+            policy DROP;
+        }
+    }
+}
+
+@include ferm.d/;
+
+domain (ip ip6) {
+    table filter {
+        chain INPUT {
+            proto tcp mod limit limit 100/s limit-burst 200 REJECT reject-with tcp-reset;
+            mod limit limit 100/s limit-burst 200 REJECT;
+        }
+        chain OUTPUT {
+        }
+        chain FORWARD {
+        }
+    }
+}
