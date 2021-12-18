@@ -6,6 +6,16 @@
     - uumas.general.packages    # Installs useful packages
     - uumas.general.ssh         # Configures sshd
     - uumas.general.users       # Creates users
+    - node-exporter
+
+- hosts: valvonta.pikaviestin.fi
+  become: yes
+
+- hosts: docker.pikaviestin.fi
+  become: yes
+  roles:
+    - uumas.docker.docker
+    - uumas.docker.element
 
 - hosts: matrix.pikaviestin.fi
   become: yes
@@ -13,6 +23,6 @@
     - nginx                     # Installs and configures nginx
     - matrix-synapse            # Installs and configures synapse
     - uumas.docker.docker       # Installs docker
-    - docker                    # Installs Docker containers, currently only related to Authentik
-    - uumas.docker.element      # Installs element in docker
+    - docker                    # Installs Docker containers, currently Cinny, and Authentik
+
 
