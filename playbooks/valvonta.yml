@@ -1,6 +1,5 @@
 ---
 - hosts: valvonta.pikaviestin.fi
-  become: yes
   roles:
 #    - role: nginx
 #      tags: nginx    # DO NOT RUN, nginx config is incomplete. Grafana and prom locations will not be correct after run.

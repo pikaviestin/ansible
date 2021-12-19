@@ -1,6 +1,5 @@
 ---
 - hosts: all
-  become: yes
   roles:
     - uumas.general.packages    # Installs useful packages
     - uumas.general.ssh         # Configures sshd
