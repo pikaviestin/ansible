@@ -16,7 +16,7 @@ matrix_media_repo_server: matrix-media.n.kapsi.fi
 
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: yes
-synapse_metrics: no
+synapse_metrics: yes
 
 synapse_psql_host: psql1.n.kapsi.fi
 synapse_psql_user: matrix_ax
