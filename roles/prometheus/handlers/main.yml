@@ -3,3 +3,8 @@
   systemd:
     name: prometheus
     state: reloaded
+
+- name: restart prometheus
+  systemd:
+    name: prometheus
+    state: restarted

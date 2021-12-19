@@ -9,3 +9,9 @@
     src: "prometheus.yml.j2"
     dest: "/etc/prometheus/prometheus.yml"
   notify: reload prometheus
+
+- name: Configure prometheus default (/etc/default/prometheus)
+  template:
+    src: "systemd-default/prometheus.j2"
+    dest: "/etc/default/prometheus"
+  notify: restart prometheus
