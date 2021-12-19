@@ -6,11 +6,13 @@ ports:
 grafana_use_provisioning: true
 grafana_version: 8.3.3
 grafana_url: https://{{ ansible_host }}/grafana/
+grafana_serve_from_sub_path: true
 grafana_auth:
-  signout_redirect_url: https://login.pikaviestin.fi/application/o/grafana/end-session/
+  signout_redirect_url: https://login.pikaviestin.fi/if/end-session/grafana/
   disable_login_form: true
   oauth_auto_login: true
-  generic_auth:
+  generic_oauth:
+    name: Authentik
     enabled: true
     client_id: 135e5017f52b164503357316c701cec702c100d4
     client_secret: "{{ SECRET_OAUTH_GRAFANA }}"
@@ -18,7 +20,7 @@ grafana_auth:
     auth_url: https://login.pikaviestin.fi/application/o/authorize/
     token_url: https://login.pikaviestin.fi/application/o/token/
     api_url: https://login.pikaviestin.fi/application/o/userinfo/
-    role_attribute_path: contains(groups[*] 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor'
+    role_attribute_path: contains(groups[*] 'authentik Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor'
 
 grafana_datasources:
   - name: prometheus
