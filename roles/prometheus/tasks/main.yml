@@ -1,0 +1,11 @@
+---
+- name: Install prometheus
+  apt:
+    name: prometheus
+    state: latest
+
+- name: Install prometheus.conf
+  template:
+    src: "prometheus.yml.j2"
+    dest: "/etc/prometheus/prometheus.yml"
+  notify: reload prometheus

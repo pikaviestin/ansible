@@ -1,0 +1,58 @@
+global:
+  scrape_interval: 10s
+  scrape_timeout: 10s
+  evaluation_interval: 10s
+
+{% if prom_oauth2 is defined %}
+oauth2:
+  client_id: "{{ prom_oauth2.client_id }}"
+  client_secret: "{{ prom_oauth2.client_secret }}"
+  scopes:
+    - profile
+    - email
+  token_url: "{{ prom_oauth2.token_url }}"
+{% endif %}
+
+scrape_configs:
+- job_name: prometheus
+  scrape_interval: 10s
+  scrape_timeout: 10s
+  metrics_path: /prom/metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - localhost:9090
+- job_name: node
+  static_configs:
+  - targets:
+    - localhost:9100
+- job_name: autodiscovery
+  scrape_interval: 10s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  dns_sd_configs:
+  - names:
+    - _prometheus._tcp.pikaviestin.fi
+    refresh_interval: 30s
+    type: SRV
+    port: 0
+  relabel_configs:
+  - source_labels: [__address__]
+    separator: ;
+    regex: ([a-zA-Z0-9-]+)(\..+)?.pikaviestin.fi:[0-9]+
+    target_label: hostname
+    replacement: $1
+    action: replace
+  - source_labels: [__address__]
+    separator: ;
+    regex: ([a-zA-Z0-9-]+)(\..+)?.pikaviestin.fi:[0-9]+
+    target_label: node
+    replacement: $1
+    action: replace
+  - source_labels: [__address__]
+    separator: ;
+    regex: ([a-zA-Z0-9-]+(\..+)?.pikaviestin.fi):[0-9]+
+    target_label: fqdn
+    replacement: $1
+    action: replace

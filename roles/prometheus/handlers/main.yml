@@ -1,0 +1,5 @@
+---
+- name: reload prometheus
+  systemd:
+    name: prometheus
+    state: reloaded
