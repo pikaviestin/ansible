@@ -27,7 +27,8 @@ grafana_datasources:
   - name: prometheus
     type: prometheus
     access: proxy
-    url: 'http://127.0.0.1:9090'
+    url: 'http://127.0.0.1:9090/prom/'
+    isDefault: true
 
 # Needs to be figured out somehow, either via ForwardAuth from nginx or something else.
 # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#oauth2
