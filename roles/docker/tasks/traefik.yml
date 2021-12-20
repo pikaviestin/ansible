@@ -21,6 +21,11 @@
     state: directory
   when: not traefik_appdata_rules.stat.exists
 
+- name: Copy Traefik rule (tls-options)
+  template:
+    src: "traefik/rules/tls-options.toml"
+    dest: "/opt/docker/appdata/traefik/rules/tls-options.toml"
+
 - name: Check Traefik acme dir
   stat:
     path: /opt/docker/appdata/traefik/acme
@@ -64,6 +69,7 @@
       - --entrypoints.websecure.http.tls.certresolver=le
       - --entrypoints.websecure.http.tls.domains[0].main=login.pikaviestin.fi
       - --entrypoints.websecure.http.tls.domains[0].sans=cinny.pikaviestin.fi,chat.pikaviestin.fi
+      - --entrypoints.websecure.http.tls.domains[1].main=docker.pikaviestin.fi
       - --api=true
       - --api.insecure=true
       - --api.dashboard=true
