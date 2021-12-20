@@ -1,10 +1,8 @@
 ---
 
-ports:
-  jitsi_http: 28001
-  element_http: 28002
+reverse_proxy_type: traefik
 
-jitsi_external_url: https://jitsi.pikaviestin.fi
+jitsi_domain: jitsi.pikaviestin.fi
 
 authentik_psql_host: psql1.n.kapsi.fi
 authentik_psql_user: matrix_ax_authentik

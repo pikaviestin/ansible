@@ -4,7 +4,7 @@ ports:
   element_http: 28001
   cinny_http: 28002
 
-reverse_proxy_type: nginx
+reverse_proxy_type: none
 
 matrix_domain: pikaviestin.fi
 matrix_server_domain: matrix.pikaviestin.fi

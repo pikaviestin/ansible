@@ -2,8 +2,8 @@
 
 collections:
   - name: uumas.general
-    version: '>=0.4.2'
+    version: '>=0.5.0'
   - name: uumas.docker
-    version: '>=0.3.1'
+    version: '>=0.4.0'
   - name: community.crypto
   - name: cloudalchemy.grafana
