@@ -26,6 +26,11 @@
     src: "traefik/rules/tls-options.toml"
     dest: "/opt/docker/appdata/traefik/rules/tls-options.toml"
 
+- name: Copy Traefik rule (mobilizon)
+  template:
+    src: "traefik/rules/mobilizon.toml"
+    dest: "/opt/docker/appdata/traefik/rules/mobilizon.toml"
+
 - name: Check Traefik acme dir
   stat:
     path: /opt/docker/appdata/traefik/acme
