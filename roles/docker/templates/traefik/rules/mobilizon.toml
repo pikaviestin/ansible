@@ -12,4 +12,4 @@
    [http.services.mobilizon-svc]
      [http.services.mobilizon-svc.loadBalancer]
        [[http.services.mobilizon-svc.loadBalancer.servers]]
-         url = "http://91.232.156.56:4000"
+         url = "http://10.0.199.45:4000"
