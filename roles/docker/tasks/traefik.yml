@@ -70,6 +70,7 @@
       - --global.checkNewVersion=true
       - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certresolver=le
       - --entrypoints.websecure.http.tls.domains[0].main=login.pikaviestin.fi
