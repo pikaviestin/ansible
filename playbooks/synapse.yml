@@ -3,5 +3,3 @@
   roles:
     - nginx                     # Installs and configures nginx
     - matrix-synapse            # Installs and configures synapse
-    - uumas.docker.docker       # Installs docker
-    - docker                    # Installs Docker containers, currently Cinny, and Authentik
