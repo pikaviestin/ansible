@@ -3,7 +3,7 @@
 [http.routers]
    [http.routers.mobilizon-rtr]
      entrypoints = "websecure"
-     rule = "Host('jarkkaa.fi')"
+     rule = "Host(`jarkkaa.fi`)"
      service = "mobilizon-svc"
      [http.routers.mobilizon-rtr.tls]
        certresolver = "le"
