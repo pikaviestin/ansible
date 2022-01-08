@@ -9,8 +9,6 @@ registration_shared_secret: '{{ matrix_registration_shared_secret }}'
 enable_group_creation: true
 enable_metrics: {{ synapse_metrics }}
 use_presence: {{ synapse_presence }}
-enable_media_repo: {{ matrix_media_repo_server is not defined }}
+enable_media_repo: {{ matrix_media_repo_server is not defined and 'media_repository' not in synapse_workers }}
 retention:
   enabled: true
-  allowed_lifetime_min: 30m
-  allowed_lifetime_max: 3y

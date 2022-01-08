@@ -13,9 +13,6 @@ update_user_directory: false
 {% endif %}
 
 
-{% if 'media_repository' in synapse_workers %}
-enable_media_repo: false
-{% endif %}
 {% if 'event_persister' in synapse_workers %}
 instance_map:
 {% for port in synapse_workers.event_persister %}
