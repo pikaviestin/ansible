@@ -3,6 +3,12 @@
 reverse_proxy_type: traefik
 
 jitsi_domain: jitsi.pikaviestin.fi
+element_domains:
+  - chat.pikaviestin.fi
+
+matrix_domain: pikaviestin.fi
+matrix_server_domain: matrix.pikaviestin.fi
+matrix_external_url: https://{{ matrix_server_domain }}
 
 authentik_psql_host: psql1.n.kapsi.fi
 authentik_psql_user: matrix_ax_authentik
