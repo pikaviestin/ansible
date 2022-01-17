@@ -2,7 +2,6 @@
 
 reverse_proxy_type: traefik
 
-jitsi_domain: jitsi.pikaviestin.fi
 element_domains:
   - chat.pikaviestin.fi
 

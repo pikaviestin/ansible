@@ -263,6 +263,8 @@ nginx_servers:
         content:
           m.homeserver:
             base_url: "{{ matrix_external_url }}"
+          im.vector.riot.jitsi:
+            preferredDomain: "{{ jitsi_domain | default('jitsi.riot.im') }}"
         headers:
           Access-Control-Allow-Origin: "'*'"
     reverse_proxy:

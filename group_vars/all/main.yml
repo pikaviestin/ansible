@@ -3,3 +3,5 @@
 admin_email: yllapito@pikaviestin.fi
 certbot_admin_email: "{{ admin_email }}"
 timezone: Europe/Helsinki
+
+jitsi_domain: jitsi.pikaviestin.fi
