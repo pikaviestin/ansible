@@ -90,11 +90,11 @@ nginx_upstreams:
       - 8008
     locations:
       - name: '/_matrix'
+      - name: '/_synapse/client'
       - name: "{{ '/_matrix/media/' if matrix_media_repo_server is not defined and 'media_repository' not in synapse_workers | default('') else '' }}"
         additional_options:
-          - 'proxy_hide_header Content-Security-Policy'
-          - "add_header Content-Security-Policy \"default-src 'self'; script-src 'self'; plugin-types application/pdf; style-src 'unsafe-inline'; object-src 'self';\" always"
           - "client_max_body_size {{ matrix_max_upload_size_mb }}M"
+
   matrix_media_repo:
     servers:
       - "{{ matrix_media_repo_server + ':9000' if matrix_media_repo_server is defined else '' }}"
@@ -103,52 +103,58 @@ nginx_upstreams:
         proxy_headers:
           Host: "{{ matrix_domain }}"
         additional_options:
-#          - 'proxy_hide_header Content-Security-Policy'
-#          - "add_header Content-Security-Policy \"default-src 'self'; script-src 'self'; plugin-types application/pdf; style-src 'unsafe-inline'; object-src 'self';\" always"
           - "client_max_body_size {{ matrix_max_upload_size_mb }}M"
+
   synchrotron_balancer:
     servers: "{{ ['8183'] if synapse_workers.generic_sync is defined else '' }}"
     locations:
-      - name: '~ ^/_matrix/client/(api/v1|v2_alpha|r0)/events$'
-      - name: "{{ '^/_matrix/client/(v2_alpha|r0)/sync$' if 'generic_init_sync' not in synapse_workers | default('') else '' }}"
+      - name: '~ ^/_matrix/client/(api/v1|v2_alpha|r0|v3)/events$'
+      - name: "{{ '^/_matrix/client/(v2_alpha|r0|v3)/sync$' if 'generic_init_sync' not in synapse_workers | default('') else '' }}"
   synchrotron_init:
     servers: "{{ ['8184'] if synapse_workers.generic_init_sync is defined else '' }}"
     locations:
-      - name: '~ ^/_matrix/client/(api/v1|r0)/initialSync$'
-      - name: '~ ^/_matrix/client/(api/v1|r0)/rooms/[^/]+/initialSync$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3)/initialSync$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3)/rooms/[^/]+/initialSync$'
   synapse_generic_client:
     servers: "{{ synapse_workers.generic_client | default('') }}"
     locations:
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/publicRooms$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/rooms/.*/joined_members$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/rooms/.*/context/.*$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/rooms/.*/members$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/rooms/.*/state$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/account/3pid$'
-      - name: '^/_matrix/client/(api/v1|r0|unstable)/devices$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/keys/query$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/createRoom$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/publicRooms$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/joined_members$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/context/.*$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/members$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state$'
+      - name: '~ ^/_matrix/client/unstable/org.matrix.msc2946/rooms/.*/spaces$'
+      - name: '~ ^/_matrix/client/(v1|unstable/org.matrix.msc2946)/rooms/.*/hierarchy$'
+      - name: '~ ^/_matrix/client/unstable/im.nheko.summary/rooms/.*/summary$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/account/3pid$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/devices$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/query$'
         additional_options:
           - 'proxy_read_timeout 1h'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/keys/changes$'
-      - name: '~/_matrix/client/versions$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/voip/turnServer$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/joined_groups$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/publicised_groups$'
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/publicised_groups/'
-      - name: '^/_matrix/client/(api/v1|r0|unstable)/rooms/.*/event/'
-      - name: '^/_matrix/client/(api/v1|r0|unstable)/joined_rooms$'
-      - name: '^/_matrix/client/(api/v1|r0|unstable)/search$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/changes$'
+      - name: '~ ^/_matrix/client/versions$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/voip/turnServer$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/joined_groups$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/publicised_groups$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/publicised_groups/'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/event/'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/joined_rooms$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/search$'
   synapse_generic_login:
     servers: "{{ synapse_workers.generic_login | default('') }}"
     locations:
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/login$'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/login/sso/redirect'
-      - name: '~ ^/_matrix/client/(r0|unstable)/register$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|unstable|v3)/login$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/login/sso/redirect'
+      - name: '~ ^/_matrix/client/(r0|unstable|v3)/register$'
+      - name: '~ ^/_matrix/client/unstable/org.matrix.msc3231/register/org.matrix.msc3231.login.registration_token/validity$'
       - name: '~ ^/_synapse/client/pick_idp$'
       - name: '~ ^/_synapse/client/pick_username'
       - name: '~ ^/_synapse/client/new_user_consent$'
       - name: '~ ^/_synapse/client/sso_register$'
       - name: '~ ^/_synapse/client/oidc/callback$'
+      - name: '~ ^/_synapse/client/saml2/authn_response$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/login/cas/ticket$'
   synapse_generic_federation:
     servers: "{{ synapse_workers.generic_federation | default('') }}"
     locations:
@@ -175,6 +181,8 @@ nginx_upstreams:
       - name: '~ ^/_matrix/federation/v1/user/devices/'
       - name: '~ ^/_matrix/federation/v1/get_groups_publicised$'
       - name: '~ ^/_matrix/key/v2/query'
+      - name: '~ ^/_matrix/federation/unstable/org.matrix.msc2946/spaces/'
+      - name: '~ ^/_matrix/federation/(v1|unstable/org.matrix.msc2946)/hierarchy/'
   synapse_generic_federation_send:
     servers: "{{ synapse_workers.generic_federation_send | default('') }}"
     method: 'ip_hash'
@@ -186,36 +194,40 @@ nginx_upstreams:
     servers: "{{ synapse_workers.generic_event_send | default('') }}"
     method: 'hash $request_uri'
     locations:
-      - name: '^/_matrix/client/(api/v1|r0|unstable)/rooms/.*/redact'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/rooms/.*/send'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/rooms/.*/state/'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)$'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/join/'
+      - name: '^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/redact'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/send'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/state/'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/(join|invite|leave|ban|unban|kick)$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/join/'
         additional_options:
           - 'proxy_read_timeout 1h'
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/profile/'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/profile/'
   synapse_generic_pagination:
     servers: "{{ synapse_workers.generic_pagination | default('') }}"
     method: 'hash $request_uri'
     locations:
-      - name: '~/_matrix/client/(api/v1|r0|unstable)/rooms/.*/messages$'
+      - name: '~/_matrix/client/(api/v1|r0|v3|unstable)/rooms/.*/messages$'
   synapse_user_dir:
     servers: "{{ synapse_workers.user_dir | default('') }}"
     locations:
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/user_directory/search$'
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/user_directory/search$'
   synapse_frontend_proxy:
     servers: "{{ synapse_workers.frontend_proxy | default('') }}"
     locations:
-      - name: '~ ^/_matrix/client/(api/v1|r0|unstable)/keys/upload'
-      - name: "{{ '~ ^/_matrix/client/(api/v1|r0|unstable)/presence/[^/]+/status' if synapse_presence is defined and not synapse_presence else '' }}"
+      - name: '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/keys/upload'
+      - name: "{{ '~ ^/_matrix/client/(api/v1|r0|v3|unstable)/presence/[^/]+/status' if synapse_presence is defined and not synapse_presence else '' }}"
   synapse_media_repository:
     servers: "{{ synapse_workers.media_repository | default('') }}"
     locations:
       - name: '/_matrix/media/'
         additional_options:
-          - 'proxy_hide_header Content-Security-Policy'
-          - "add_header Content-Security-Policy \"default-src 'self'; script-src 'self'; plugin-types application/pdf; style-src 'unsafe-inline'; object-src 'self';\" always"
           - "client_max_body_size {{ matrix_max_upload_size_mb }}M"
+      - name: '~ ^/_synapse/admin/v1/purge_media_cache$'
+      - name: '~ ^/_synapse/admin/v1/room/.*/media.*$'
+      - name: '~ ^/_synapse/admin/v1/user/.*/media.*$'
+      - name: '~ ^/_synapse/admin/v1/media/.*$'
+      - name: '~ ^/_synapse/admin/v1/quarantine_media/.*$'
+      - name: '~ ^/_synapse/admin/v1/users/.*/media$'
     
   maubot:
     servers: "{{ ['29316'] if 'maubot' in matrix_extras | default('') else '' }}"
@@ -229,6 +241,10 @@ nginx_upstreams:
     servers: "{{ ['29319'] if 'mautrix-facebook' in matrix_extras | default('') else '' }}"
     locations:
       - name: '/facebook'
+  mautrix_googlechat:
+    servers: "{{ ['29320'] if 'mautrix-googlechat' in matrix_extras | default('') else '' }}"
+    locations:
+      - name: '/googlechat'
   mx_puppet_slack:
     servers: "{{ ['8432'] if 'mx-puppet-slack' in matrix_extras | default('') else '' }}"
     locations:
@@ -241,7 +257,7 @@ nginx_maps:
       default: synchrotron_balancer
       "''": synchrotron_init
     locations:
-      - name: '~ ^/_matrix/client/(v2_alpha|r0)/sync$'
+      - name: '~ ^/_matrix/client/(v2_alpha|r0|v3)/sync$'
         additional_options:
           - 'proxy_read_timeout 1h'
 
