@@ -1,4 +1,0 @@
----
-- hosts: docker.pikaviestin.fi
-  roles:
-    - uumas.docker.element
