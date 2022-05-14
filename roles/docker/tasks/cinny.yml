@@ -12,7 +12,7 @@
 - name: Cinny Container
   docker_container:
    name: cinny
-   image: ajbura/cinny:v2.0.1
+   image: ajbura/cinny:v2.0.2
    pull: yes
    restart_policy: unless-stopped
    volumes:
