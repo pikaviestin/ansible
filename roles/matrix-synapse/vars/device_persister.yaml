@@ -1,0 +1,3 @@
+worker_listeners:
+  - replication
+  - client

@@ -13,19 +13,68 @@ update_user_directory: false
 {% endif %}
 
 
-{% if 'event_persister' in synapse_workers %}
+{% if 'event_persister' in synapse_workers or 'typing_persister' in synapse_workers or 'account_persister' in synapse_workers or 'device_persister' in synapse_workers or 'presence_persister' in synapse_workers or 'receipt_persister' in synapse_workers %}
 instance_map:
-{% for port in synapse_workers.event_persister %}
-  event_persister-{{ loop.index0 }}:
+
+{% for persister_type in persister_workers %}
+
+{% if persister_type in synapse_workers %}
+{% for port in synapse_workers[persister_type] %}
+  {{ persister_type }}-{{ loop.index0 }}:
     host: localhost
     port: {{ port }}
 {% endfor %}
+{% endif %}
+
+{% endfor %}
 
 stream_writers:
+{% if 'event_persister' in synapse_workers %}
   events:
 {% for port in synapse_workers.event_persister %}
     - event_persister-{{ loop.index0 }}
 {% endfor %}
+{% endif %}
+
+{% if 'typing_persister' in synapse_workers %}
+  typing:
+{% for port in synapse_workers.typing_persister %}
+    - typing_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% if 'account_persister' in synapse_workers %}
+  account_data:
+{% for port in synapse_workers.account_persister %}
+    - account_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% if 'device_persister' in synapse_workers %}
+  to_device:
+{% for port in synapse_workers.device_persister %}
+    - device_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% if 'presence_persister' in synapse_workers %}
+  presence:
+{% for port in synapse_workers.presence_persister %}
+    - presence_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% if 'receipt_persister' in synapse_workers %}
+  receipts:
+{% for port in synapse_workers.receipt_persister %}
+    - receipt_persister-{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+
+{% endif %}
+
+{% if 'background_tasks' in synapse_workers %}
+run_background_tasks_on: background_tasks-0
 {% endif %}
 
 {% if 'federation_sender' in synapse_workers %}

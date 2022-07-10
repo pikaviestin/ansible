@@ -21,3 +21,10 @@ synchrotron_workers:
   balancer: generic_sync
   init: generic_init_sync
 
+persister_workers:
+  - event_persister
+  - typing_persister
+  - account_persister
+  - device_persister
+  - presence_persister
+  - receipt_persister
