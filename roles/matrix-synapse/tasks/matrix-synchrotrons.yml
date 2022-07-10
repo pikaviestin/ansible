@@ -1,6 +1,5 @@
 ---
 
-#NOTE: remove when updating to bullseye
 - block:
   - name: Add backports
     apt_repository:
