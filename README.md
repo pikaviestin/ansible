@@ -1,4 +1,4 @@
-# Ansible for matrix.ax
+# Ansible for pikaviestin
 
 Install requirements: `ansible-galaxy install -r requirements.yml`
 
