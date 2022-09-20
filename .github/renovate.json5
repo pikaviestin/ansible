@@ -2,7 +2,7 @@
   "enabled": true,
   "timezone": "Europe/Helsinki",
   "semanticCommits": "enabled",
-  "dependencyDashboard": false,
+  "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   // do not notify on closed unmerged PRs
   "suppressNotifications": ["prIgnoreNotification"],
