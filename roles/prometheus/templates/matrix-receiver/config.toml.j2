@@ -1,0 +1,6 @@
+Homeserver = "{{ matrix_hs_url }}"
+TargetRoomID = "{{ matrix_target_roomID }}"
+MXID = "{{ matrix_mxid }}"
+MXToken = "{{ matrix_token }}"
+HTTPPort = {{ matrix_http_port | default(9088) }}
+HTTPAddress = "{{ matrix_http_addr | default("127.0.0.1") }}"

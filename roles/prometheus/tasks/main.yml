@@ -2,16 +2,23 @@
 - name: Install prometheus
   apt:
     name: prometheus
-    state: latest
+    state: present
 
 - name: Install prometheus.conf
   template:
-    src: "prometheus.yml.j2"
+    src: "{{ role_path }}/templates/prometheus.yml.j2"
     dest: "/etc/prometheus/prometheus.yml"
   notify: reload prometheus
 
+- name: Install alerts config for Prometheus
+  copy:
+    src: "{{ role_path }}/templates/alerts.yml"
+    dest: "/etc/prometheus/alerts.yaml"
+
 - name: Configure prometheus default (/etc/default/prometheus)
   template:
-    src: "systemd-default/prometheus.j2"
+    src: "{{ role_path }}/templates/systemd-default/prometheus.j2"
     dest: "/etc/default/prometheus"
   notify: restart prometheus
+
+- include_tasks: alertmanger.yml

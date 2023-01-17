@@ -2,6 +2,11 @@ ports:
   grafana_http: 3000
   prometheus_http: 9090
 
+matrix_http_port: 9088
+matrix_hs_url: "https://matrix.pikaviestin.fi"
+matrix_target_roomID: "!dMOzPJUhMVQsTOaJJa:pikaviestin.fi"
+matrix_mxid: "@sm:pikaviestin.fi"
+
 # Grafana related
 grafana_use_provisioning: true
 grafana_version: 8.3.3

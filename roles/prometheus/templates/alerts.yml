@@ -1,0 +1,30 @@
+groups:
+  - name: Nodes
+    rules:
+      - alert: RootFSFullPredict
+        expr: predict_linear(node_filesystem_avail_bytes{device!="rootfs",mountpoint="/"}[3h], 12 * 3600) < 0
+        for: 15m
+        labels:
+          category: system
+          severity: high
+        annotations:
+          description: Root filesystem at {{$labels.hostname}} is predicted to become full within 12 hours.
+          summary: Root filesystem full prediction at {{$labels.hostname}}
+      - alert: FSFullPredictLong
+        expr: predict_linear(node_filesystem_avail_bytes{fstype!~"nfs."}[60h], 96 * 3600) < 0
+        for: 30m
+        labels:
+          category: system
+          severity: medium
+        annotations:
+          description: Filesystem {{$labels.mountpoint}} at {{$labels.hostname}} is predicted to become full within 4 days.
+          summary: Filesystem full prediction at {{$labels.hostname}}
+      - alert: FSExhausted
+        expr: node_filesystem_avail_bytes{fstype!~"nfs."} == 0
+        for: 10m
+        labels:
+          category: system
+          severity: high
+        annotations:
+          description: Filesystem {{$labels.mountpoint}} at {{$labels.hostname}} is completely exhausted!
+          summary: Filesystem full at {{$labels.hostname}}

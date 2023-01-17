@@ -1,0 +1,43 @@
+---
+- name: Make sure directory exists
+  file:
+    path: /etc/matrix-alertmanager/matrix-alertmanager-receiver
+    state: directory
+
+- name: Clone the repository
+  git:
+    repo: "https://git.sr.ht/~fnux/matrix-alertmanager-receiver"
+    dest: /etc/matrix-alertmanager/matrix-alertmanager-receiver
+
+- name: Compile the app
+  command: cd /etc/matrix-alertmanager/matrix-alertmanager-receiver && go build -v
+
+- name: Copy the config file
+  template:
+    src: "{{ role_path }}/templates/matrix-receiver/config.toml.j2"
+    dest: /etc/matrix-alertmanager-receiver.toml
+    owner: root
+
+- name: Create service file for it
+  copy:
+    content: |
+      [Unit]
+      Description=Sending alerts from Prometheus to Matrix
+      After=network.target
+      
+      [Service]
+      Type=simple
+      User=root
+      ExecStart=/etc/matrix-alertmanager/matrix-alertmanager-receiver/matrix-alertmanager-receiver
+      Restart=on-failure
+      
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/matrix-alertmanager.service
+  notify: reload systemd
+
+- name: Enable service and start it
+  systemd:
+    name: matrix-alertmanager
+    state: started
+    enabled: true

@@ -1,0 +1,17 @@
+---
+- name: Install prometheus-alert-manager
+  apt:
+    name: prometheus-alertmanager
+    state: present
+
+- name: Configure alertmanager
+  copy:
+    src: "{{ role_path }}/templates/alertmanager.yml"
+    dest: /etc/prometheus/alertmanager.yml
+
+- name: Reload alertmanager
+  systemd:
+    name: prometheus-alertmanager
+    state: reloaded
+
+- include_tasks: matrix-alertmanager.yml
