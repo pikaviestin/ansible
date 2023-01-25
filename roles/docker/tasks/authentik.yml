@@ -14,7 +14,9 @@
 - name: Authentik server
   docker_container:
    name: authentik_server
-   image: ghcr.io/goauthentik/server:2023.1.2
+   #image: ghcr.io/goauthentik/server:2023.1.2
+   # Inlucdes an fix for hardware key only login, it's beta technically.
+   image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
    command: server
    restart_policy: unless-stopped
@@ -32,6 +34,7 @@
     AUTHENTIK_POSTGRESQL__USER: "{{ authentik_psql_user }}"
     AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_psql_user }}"
     AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
+    AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
    volumes:
     - /opt/docker/appdata/authentik/templates:/templates
     - /opt/docker/appdata/authentik/media:/media
@@ -51,7 +54,9 @@
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   image: ghcr.io/goauthentik/server:2023.1.2
+   #image: ghcr.io/goauthentik/server:2023.1.2
+   # Includes an fix for key login
+   image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
    command: worker
    restart_policy: unless-stopped
@@ -74,6 +79,7 @@
     AUTHENTIK_POSTGRESQL__USER: "{{ authentik_psql_user }}"
     AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_psql_user }}"
     AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
+    AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
    volumes:
     - /opt/docker/appdata/authentik/backups:/backups
     - /opt/docker/appdata/authentik/media:/media
