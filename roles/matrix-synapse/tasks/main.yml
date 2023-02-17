@@ -59,6 +59,13 @@
     mode: '644'
   when: matrix_openidc_providers is defined
   notify: config matrix target
+- name: turn config
+  template:
+    src: 'conf.d/turn.yaml.j2'
+    dest: '/etc/matrix-synapse/conf.d/turn.yaml'
+    mode: '644'
+  when: turn_domain is defined
+  notify: config matrix target
 
 - name: Install matrix-synapse-shared-secret-auth
   pip:

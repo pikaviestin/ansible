@@ -1,0 +1,11 @@
+---
+
+turn_uris:
+  - "turns:{{ turn_domain }}:443?transport=udp"
+  - "turn:{{ turn_domain }}:443?transport=udp"
+  - "turns:{{ turn_domain }}:443?transport=tcp"
+  - "turn:{{ turn_domain }}:443?transport=tcp"
+turn_shared_secret: "{{ turn_secret }}"
+turn_user_lifetime: 1d
+turn_allow_guests: false
+

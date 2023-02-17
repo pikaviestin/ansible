@@ -1,5 +1,7 @@
 ---
 
+turn_domain: turn.kapsi.fi
+
 admin_email: yllapito@pikaviestin.fi
 certbot_admin_email: "{{ admin_email }}"
 timezone: Europe/Helsinki
