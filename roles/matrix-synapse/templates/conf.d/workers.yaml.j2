@@ -3,13 +3,13 @@
 redis:
   enabled: true
 {% if 'appservice' in synapse_workers %}
-notify_appservices: false
+notify_appservices_from_worker: appservice-0
 {% endif %}
 {% if 'pusher' in synapse_workers %}
 start_pushers: false
 {% endif %}
 {% if 'user_dir' in synapse_workers %}
-update_user_directory: false
+update_user_directory_from_worker: user_dir-0
 {% endif %}
 
 
