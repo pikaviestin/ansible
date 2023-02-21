@@ -14,9 +14,8 @@
 - name: Authentik server
   docker_container:
    name: authentik_server
-   #image: ghcr.io/goauthentik/server:2023.1.2
-   # Inlucdes an fix for hardware key only login, it's beta technically.
-   image: ghcr.io/goauthentik/dev-server:gh-next
+   image: ghcr.io/goauthentik/server:2023.2.2
+   #image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
    command: server
    restart_policy: unless-stopped
@@ -54,9 +53,9 @@
 - name: Authentik worker
   docker_container:
    name: authentik_worker
-   #image: ghcr.io/goauthentik/server:2023.1.2
-   # Includes an fix for key login
-   image: ghcr.io/goauthentik/dev-server:gh-next
+   image: ghcr.io/goauthentik/server:2023.2.2
+   # That's beta
+   #image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
    command: worker
    restart_policy: unless-stopped
