@@ -26,6 +26,11 @@
     src: "traefik/rules/tls-options.toml"
     dest: "/opt/docker/appdata/traefik/rules/tls-options.toml"
 
+- name: Copy Traefik rule (502-router)
+  template:
+    src: "traefik/rules/502-router.yaml"
+    dest: "/opt/docker/appdata/traefik/rules/502-router.yaml"
+
 - name: Check Traefik acme dir
   stat:
     path: /opt/docker/appdata/traefik/acme
@@ -93,8 +98,3 @@
     volumes:
       - /opt/docker/appdata/traefik:/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
- #   labels:
- #     - "traefik.enable"
- #     - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
- #     - "traefik.http.routers.traefik-rtr.rule=Host('docker.pikaviestin.fi') && Path('/traefik/')"
- #     - "traefik.http.routers.traefik-rtr.priority=10"
