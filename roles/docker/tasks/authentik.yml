@@ -1,9 +1,35 @@
 ---
+- name: "Authentik: Check appdata dir"
+  stat:
+   path: /opt/docker/appdata/authentik
+  register: authentik_appdata
 
-- name: Authentik network
+- name: "Authentik: Create appdata directory"
+  file:
+   path: /opt/docker/appdata/authentik
+   state: directory
+  when: not authentik_appdata.stat.exists
+
+- name: "Authentik: Check templates dir"
+  stat:
+   path: /opt/docker/appdata/authentik/templates
+  register: authentik_appdata_templates
+
+- name: "Authentik: Create Authentik templates directory"
+  file:
+   path: /opt/docker/appdata/authentik/templates
+   state: directory
+  when: not authentik_appdata_templates.stat.exists
+
+- name: "Authentik: Copy custom email template (tilin-varmistus)"
+  template:
+   src: "templates/authentik/custom-templates/tilin-varmistus.html"
+   dest: /opt/docker/appdata/authentik/templates/tilin-varmistus.html
+
+- name: "Authentik: Docker Network"
   docker_network:
    name: authentik
-- name: Authentik redis
+- name: "Authentik: redis container"
   docker_container:
    name: authentik_redis
    image: redis:alpine
@@ -11,7 +37,7 @@
    networks:
     - name: authentik
 
-- name: Authentik server
+- name: "Authentik: server container"
   docker_container:
    name: authentik_server
    image: ghcr.io/goauthentik/server:2023.4.1
@@ -50,7 +76,7 @@
     traefik.http.routers.authentik-rtr.service: authentik-svc
     traefik.http.services.authentik-svc.loadbalancer.server.port: "9000"
 
-- name: Authentik worker
+- name: "Authentik: worker container"
   docker_container:
    name: authentik_worker
    image: ghcr.io/goauthentik/server:2023.4.1
