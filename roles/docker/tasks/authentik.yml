@@ -22,7 +22,7 @@
   when: not authentik_appdata_templates.stat.exists
 
 - name: "Authentik: Copy custom email template (tilin-varmistus)"
-  template:
+  copy:
    src: "templates/authentik/custom-templates/tilin-varmistus.html"
    dest: /opt/docker/appdata/authentik/templates/tilin-varmistus.html
 
