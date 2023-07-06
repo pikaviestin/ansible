@@ -76,6 +76,7 @@
       - --entrypoints.websecure.http.tls.domains[0].main=login.pikaviestin.fi
       - --entrypoints.websecure.http.tls.domains[0].sans=cinny.pikaviestin.fi,chat.pikaviestin.fi
       - --entrypoints.websecure.http.tls.domains[1].main=docker.pikaviestin.fi
+      - --entrypoints.websecure.http.tls.domains[2].main=sliding-sync.matrix.pikaviestin.fi
       - --api=true
       - --api.insecure=true
       - --api.dashboard=true

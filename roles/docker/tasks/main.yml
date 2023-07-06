@@ -2,4 +2,5 @@
 - include_tasks: traefik.yml
 - include_tasks: authentik.yml
 - include_tasks: cinny.yml
+- include_tasks: matrix-sliding-sync.yaml
 # - include_tasks: email-bridge.yaml

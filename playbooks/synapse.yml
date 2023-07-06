@@ -1,5 +1,6 @@
 ---
 - hosts: matrix.pikaviestin.fi
   roles:
-    - nginx                     # Installs and configures nginx
+    - name: nginx                     # Installs and configures nginx
+      tags: nginx
     - matrix-synapse            # Installs and configures synapse

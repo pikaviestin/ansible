@@ -1,0 +1,19 @@
+---
+
+- name: Create sliding sync container
+  docker_container:
+    name: sliding-sync
+    image: ghcr.io/matrix-org/sliding-sync:latest
+    pull: yes
+    restart_policy: unless-stopped
+    env:
+      SYNCV3_SERVER: https://matrix.pikaviestin.fi
+      SYNCV3_SECRET: "{{ sliding_sync_secret }}"
+      SYNCV3_BINDADDR: :8008
+      SYNCV3_DB: "user=matrix_ax_syncv3 password={{ sliding_sync_db_password }} dbname=matrix_ax_syncv3 sslmode=disable host=psql1.n.kapsi.fi"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.slidingsync-rtr.entrypoints: "websecure"
+      traefik.http.routers.slidingsync-rtr.rule: Host("sliding-sync.matrix.pikaviestin.fi")
+      traefik.http.routers.slidingsync-rtr.service: slidingsync-svc
+      traefik.http.services.slidingsync-svc.loadbalancer.server.port: "8008"

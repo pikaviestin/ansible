@@ -17,6 +17,8 @@ synapse_metrics: yes
 synapse_psql_host: psql1.n.kapsi.fi
 synapse_psql_user: matrix_ax
 
+slidingsync_url: https://sliding-sync.matrix.pikaviestin.fi
+
 
 matrix_auto_join_rooms:
   - '#aula:pikaviestin.fi'
@@ -281,6 +283,8 @@ nginx_servers:
             base_url: "{{ matrix_external_url }}"
           im.vector.riot.jitsi:
             preferredDomain: "{{ jitsi_domain | default('jitsi.riot.im') }}"
+          org.matrix.msc3575.proxy:
+            url: "{{ slidingsync_url }}"
         headers:
           Access-Control-Allow-Origin: "'*'"
     reverse_proxy:
