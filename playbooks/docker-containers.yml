@@ -2,5 +2,5 @@
 - hosts: docker.pikaviestin.fi
   roles:
     - docker
-    - role: uumas.docker.element
+    - role: pikaviestin.docker.element
       reverse_proxy_type: traefik # FIXME: It doesn't see it from vars..
