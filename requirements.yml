@@ -7,6 +7,8 @@ collections:
     version: '>=0.5.5'
   - name: pikaviestin.docker
     version: '>=0.0.1'
+  - name: pikaviestin.matrix
+    version: '>=0.0.4'
   - name: community.crypto
 
 roles:
