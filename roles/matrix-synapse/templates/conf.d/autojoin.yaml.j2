@@ -1,6 +1,0 @@
-# {{ ansible_managed }}
-
-auto_join_rooms:
-{% for room_id in matrix_auto_join_rooms %}
-  - "{{ room_id }}"
-{% endfor %}
