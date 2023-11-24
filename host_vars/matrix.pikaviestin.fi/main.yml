@@ -76,8 +76,6 @@ synapse_workers:
     - 8071
   user_dir:
     - 8076
-  frontend_proxy:
-    - 8092
 
 matrix_serve_wellknown_on_matrix_domain: true
 
