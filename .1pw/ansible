@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export ANSIBLE_CONFIG=.rbw/ansible.cfg
+
+$(basename "$0") -e "ansible_become_pass=$(rbw get matrix.pikaviestin.fi)" "$@"
+
