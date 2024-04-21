@@ -14,7 +14,7 @@ synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: yes
 synapse_metrics: yes
 
-synapse_psql_host: psql1.n.kapsi.fi
+synapse_psql_host: rypale.n.kapsi.fi
 synapse_psql_user: matrix_ax
 
 matrix_slidingsync_url: https://sliding-sync.matrix.pikaviestin.fi
