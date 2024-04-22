@@ -11,7 +11,7 @@ matrix_max_upload_size_mb: 200
 matrix_media_repo_server: matrix-media.n.kapsi.fi
 
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
-synapse_presence: yes
+synapse_presence: no
 synapse_metrics: yes
 
 synapse_psql_host: rypale.n.kapsi.fi
