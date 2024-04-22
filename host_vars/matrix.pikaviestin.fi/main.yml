@@ -66,9 +66,11 @@ synapse_workers:
   generic_federation:
     - 8034
     - 8035
+    - 8036
   generic_federation_send:
     - 8041
     - 8042
+    - 8043
   event_persister:
     - 8046
   federation_sender:
