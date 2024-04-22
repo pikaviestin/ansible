@@ -73,6 +73,9 @@ synapse_workers:
     - 8043
   event_persister:
     - 8046
+    - 8047
+  typing_persister:
+    - 8050
   federation_sender:
     - 8056
     - 8057
