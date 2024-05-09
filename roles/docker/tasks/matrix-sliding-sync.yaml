@@ -3,7 +3,7 @@
 - name: Create sliding sync container
   docker_container:
     name: sliding-sync
-    image: ghcr.io/matrix-org/sliding-sync:latest@sha256:301be4083cf37fe0895ec204d7d6c3015a46b357ae3a401811632fac27d3456d
+    image: ghcr.io/matrix-org/sliding-sync:latest@sha256:91adb85f956873e99e5061f527fd4bf9aac3f8ea7369726a81359e134fd8de05
     pull: yes
     restart_policy: unless-stopped
     env:
