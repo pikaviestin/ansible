@@ -6,6 +6,7 @@
     image: ghcr.io/matrix-org/sliding-sync:latest@sha256:1789abdfa80c5486903aec0d0b9e9db1d3673cfdeb8f8d0cf02074534a2ef492
     pull: yes
     restart_policy: unless-stopped
+    image_name_mismatch: recreate
     env:
       SYNCV3_SERVER: https://matrix.pikaviestin.fi
       SYNCV3_SECRET: "{{ sliding_sync_secret }}"
