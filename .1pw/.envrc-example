@@ -1,0 +1,2 @@
+export ANSIBLE_CONFIG=.1pw/ansible.cfg
+export ANSIBLE_BECOME_PASSWORD="$(op read op://personal/b5g55uh4nchuk6r2ji7hp2qrwa/NotesPlain)"
