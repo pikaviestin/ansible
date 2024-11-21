@@ -3,5 +3,9 @@
   "homeserverList": [
       "kapsi.fi",
       "pikaviestin.fi"
-  ]
+  ],
+  "hashRouter": {
+    "enabled": true,
+    "basename": "/"
+  }
 }
