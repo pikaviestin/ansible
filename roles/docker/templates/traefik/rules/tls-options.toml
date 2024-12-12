@@ -3,7 +3,6 @@
 [tls]
   [tls.options]
     [tls.options.default]
-      preferServerCipherSuites = true
       minVersion = "VersionTLS12"
       maxVersion = "VersionTLS13"
      cipherSuites = [
