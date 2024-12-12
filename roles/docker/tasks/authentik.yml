@@ -33,6 +33,7 @@
   docker_container:
    name: authentik_redis
    image: redis:alpine
+   pull: yes
    restart_policy: unless-stopped
    networks:
     - name: authentik

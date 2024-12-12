@@ -63,7 +63,9 @@
   docker_container:
     name: traefik
     hostname: traefik
-    image: traefik:latest
+    image: traefik:v3.2.2@sha256:990bbdb0a9174b0d441317a63188e41c63795380db42b36ed920543e27ce04c9
+    pull: yes
+    image_name_mismatch: recreate
     network_mode: host
     restart_policy: unless-stopped
     command:
@@ -81,7 +83,7 @@
       - --api.insecure=true
       - --api.dashboard=true
       - --log=true
-      - --log.level=ERROR
+      - --log.level=INFO
       - --accessLog=true
       - --accessLog.filePath=/logs/traefik.log
       - --accessLog.bufferingSize=100
@@ -89,7 +91,6 @@
       - --providers.docker=true
       - --providers.docker.exposedByDefault=false
       - --providers.docker.network=traefik_proxy
-      - --providers.docker.swarmMode=false
       - --providers.file.directory=/config/rules
       - --providers.file.watch=true
       - --certificatesResolvers.le.acme.email={{ certbot_admin_email }}
