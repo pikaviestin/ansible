@@ -10,6 +10,8 @@ matrix_max_upload_size_mb: 200
 
 matrix_media_repo_server: matrix-media.n.kapsi.fi
 
+synapse_monitor_hostname: matrix.n.pikaviestin.fi
+
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: true
 synapse_metrics: yes
@@ -78,9 +80,15 @@ synapse_workers:
     - 8049
   typing_persister:
     - 8050
+  device_persister:
+    - 8054
+  account_persister:
+    - 8055
   federation_sender:
     - 8056
     - 8057
+  receipt_persister:
+    - 8058
   appservice:
     - 8066
   pusher:
