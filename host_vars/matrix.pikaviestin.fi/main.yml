@@ -19,8 +19,13 @@ synapse_metrics: yes
 synapse_psql_host: rypale.n.kapsi.fi
 synapse_psql_user: matrix_ax
 
-matrix_slidingsync_url: https://sliding-sync.matrix.pikaviestin.fi
+# matrix_slidingsync_url: https://sliding-sync.matrix.pikaviestin.fi
 
+draupnir_psql_host: rypale.n.kapsi.fi
+draupnir_psql_user: matrix_ax_draupnir
+draupnir_psql_db: matrix_ax_draupnir
+draupnir_management_room: "!lrVfenpcyjuZcENkKh:pikaviestin.fi"
+draupnir_raw_homeserver_url: "http://127.0.0.1:9656"
 
 matrix_auto_join_rooms:
   - '#aula:pikaviestin.fi'
