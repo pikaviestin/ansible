@@ -41,7 +41,7 @@
 - name: "Authentik: server container"
   docker_container:
    name: authentik_server
-   image: ghcr.io/goauthentik/server:2025.4.1
+   image: ghcr.io/goauthentik/server:2025.6.2
    #image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
    command: server
@@ -80,7 +80,7 @@
 - name: "Authentik: worker container"
   docker_container:
    name: authentik_worker
-   image: ghcr.io/goauthentik/server:2025.4.1
+   image: ghcr.io/goauthentik/server:2025.6.2
    # That's beta
    #image: ghcr.io/goauthentik/dev-server:gh-next
    pull: yes
