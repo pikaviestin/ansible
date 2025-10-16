@@ -1,5 +1,5 @@
 ---
-
+synapse_monitor_enabled: false
 reverse_proxy_type: none
 
 matrix_domain: pikaviestin.fi
@@ -11,6 +11,7 @@ matrix_max_upload_size_mb: 200
 matrix_media_repo_server: matrix-media.n.kapsi.fi
 
 synapse_monitor_hostname: matrix.n.pikaviestin.fi
+synapse_monitor_listen_ip: localhost
 
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: true
@@ -26,7 +27,7 @@ draupnir_psql_user: matrix_ax_draupnir
 draupnir_psql_db: matrix_ax_draupnir
 draupnir_management_room: "!lrVfenpcyjuZcENkKh:pikaviestin.fi"
 draupnir_raw_homeserver_url: "http://127.0.0.1:9656"
-
+draupnir_abuse_reporting_enabled: true
 matrix_auto_join_rooms:
   - '#aula:pikaviestin.fi'
   - '#matrix-suomi:kapsi.fi'
@@ -51,6 +52,7 @@ synapse_sso_client_whitelist:
   - https://cinny.pikaviestin.fi/
 
 nginx_matrix_website_redirect: https://www.pikaviestin.fi
+nginx_certbot_use_dns_challenge: false
 
 synapse_workers:
   generic_sync:
