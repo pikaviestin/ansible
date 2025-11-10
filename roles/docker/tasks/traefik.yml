@@ -63,7 +63,7 @@
   docker_container:
     name: traefik
     hostname: traefik
-    image: traefik:v3.5.6@sha256:c460044fcb4ccca50e6e5ece81ef64a47cb24b16b8fbe4b1f699a90429e72119
+    image: traefik:v3.5.6@sha256:16acb89c6db341182970d6fdafece31303b0a380a8ed7aa51682e225229bf1d2
     pull: yes
     image_name_mismatch: recreate
     network_mode: host
