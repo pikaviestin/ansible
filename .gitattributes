@@ -2,3 +2,4 @@
 # git config --global diff.ansible-vault.textconv "ansible-vault view"
 #
 vault.yml diff=ansible-vault merge=binary
+*.sh text eol=lf
