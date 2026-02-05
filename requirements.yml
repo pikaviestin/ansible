@@ -4,7 +4,7 @@ collections:
   - name: uumas.general
     version: '>=0.5.0'
   - name: uumas.docker
-    version: '>=0.5.5'
+    version: '>=0.10.0'
   - name: pikaviestin.docker
     version: '>=0.0.1'
   - name: pikaviestin.matrix
