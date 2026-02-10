@@ -2,6 +2,8 @@
 synapse_monitor_enabled: false
 reverse_proxy_type: none
 
+synapse_ensure_latest: true
+
 matrix_domain: pikaviestin.fi
 matrix_server_domain: matrix.pikaviestin.fi
 matrix_external_url: https://{{ matrix_server_domain }}
