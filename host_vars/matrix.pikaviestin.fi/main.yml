@@ -8,12 +8,15 @@ matrix_domain: pikaviestin.fi
 matrix_server_domain: matrix.pikaviestin.fi
 matrix_external_url: https://{{ matrix_server_domain }}
 
+mas_domain: matrix-auth.pikaviestin.fi
+mas_enabled: true
+
 matrix_max_upload_size_mb: 200
 
 matrix_media_repo_server: matrix-media.n.kapsi.fi
 
-synapse_monitor_hostname: matrix.n.pikaviestin.fi
-synapse_monitor_listen_ip: localhost
+#synapse_monitor_hostname: matrix.n.pikaviestin.fi
+#synapse_monitor_listen_ip: localhost
 
 synapse_admin_contact: 'mailto:yllapito@pikaviestin.fi'
 synapse_presence: true
@@ -34,24 +37,24 @@ matrix_auto_join_rooms:
   - '#aula:pikaviestin.fi'
   - '#matrix-suomi:kapsi.fi'
 
-matrix_openidc_providers:
-  - idp_id: authentik
-    idp_name: Authentik
-    discover: true
-    issuer: "https://login.pikaviestin.fi/application/o/pikaviestin-matrix/"
-    client_id: "52611cbe0a8e16c458026d4f7b3c966cd0acd549"
-    client_secret: "{{ matrix_openidc_providers_authentik_client_secret }}"
-    scopes:
-      - "openid"
-      - "profile"
-    user_mapping_provider:
-      config:
-        localpart_template: "{{ '{{ user.preferred_username }}' }}"
-        display_name_template: "{{ '{{ user.preferred_username }}' }}"
+#matrix_openidc_providers:
+#  - idp_id: authentik
+#    idp_name: Authentik
+#    discover: true
+#    issuer: "https://login.pikaviestin.fi/application/o/pikaviestin-matrix/"
+#    client_id: "52611cbe0a8e16c458026d4f7b3c966cd0acd549"
+#    client_secret: "{{ matrix_openidc_providers_authentik_client_secret }}"
+#    scopes:
+#      - "openid"
+#      - "profile"
+#    user_mapping_provider:
+#      config:
+#        localpart_template: "{{ '{{ user.preferred_username }}' }}"
+#        display_name_template: "{{ '{{ user.preferred_username }}' }}"
 
-synapse_sso_client_whitelist:
-  - https://chat.pikaviestin.fi/
-  - https://cinny.pikaviestin.fi/
+#synapse_sso_client_whitelist:
+#  - https://chat.pikaviestin.fi/
+#  - https://cinny.pikaviestin.fi/
 
 nginx_matrix_website_redirect: https://www.pikaviestin.fi
 nginx_certbot_use_dns_challenge: false
