@@ -16,12 +16,19 @@
   containers.podman.podman_network:
     name: traefik_proxy
 
+# Debian's docker-compose is the provider `podman compose` runs; it needs
+# nothing from docker-ce.
+- name: "Mobilizon: compose provider"
+  ansible.builtin.apt:
+    name: docker-compose
+    install_recommends: false
+
 - name: "Mobilizon: compose up on podman"
-  ansible.builtin.command: docker compose up -d --remove-orphans
+  ansible.builtin.command: podman compose up -d --remove-orphans
   args:
     chdir: "{{ mobilizon_compose_dir }}"
   environment:
-    DOCKER_HOST: unix:///run/podman/podman.sock
+    PODMAN_COMPOSE_WARNING_LOGS: "false"
   register: mobilizon_up
   changed_when: "'Started' in mobilizon_up.stderr or 'Created' in mobilizon_up.stderr or 'Recreated' in mobilizon_up.stderr"
 

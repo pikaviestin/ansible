@@ -17,16 +17,6 @@ mobilizon_domains:
   - jarkkaa.fi
 mobilizon_http_port: 4000
 
-podman_prepull_images:
-  - "{{ authentik_image }}"
-  - "{{ cinny_image }}"
-  - "{{ element_image }}"
-  - docker.io/jitsi/web:{{ jitsi_docker_tag }}
-  - docker.io/jitsi/prosody:{{ jitsi_docker_tag }}
-  - docker.io/jitsi/jicofo:{{ jitsi_docker_tag }}
-  - docker.io/jitsi/jvb:{{ jitsi_docker_tag }}
-  - docker.io/valkey/valkey:alpine
-
 podman_retired_socket_proxies: [authentik, cinny, element, jitsi]
 podman_retired_socket_helpers: [caddy-socket-proxy, http-socat]
 podman_retired_helper_images:
