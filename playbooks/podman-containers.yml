@@ -1,0 +1,6 @@
+---
+- name: Podman services on docker.pikaviestin.fi
+  hosts: docker.pikaviestin.fi
+  roles:
+    - uumas.podman.podman
+    - podman_services

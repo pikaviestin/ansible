@@ -1,7 +1,5 @@
 ---
 
-reverse_proxy_type: caddy
-
 caddy_admin_email: "{{ admin_email }}"
 caddy_use_firewalld: false
 

@@ -3,13 +3,13 @@
 collections:
   - name: uumas.general
     version: '>=0.5.0'
-  - name: uumas.docker
-    version: '>=0.10.0'
-  - name: pikaviestin.docker
-    version: '>=0.0.1'
   - name: pikaviestin.matrix
     version: '>=0.3.0'
   - name: community.crypto
+  - name: uumas.podman
+    version: '>=0.1.10'
+  - name: containers.podman
+    version: '>=1.16.0'
 
 roles:
   - name: cloudalchemy.grafana

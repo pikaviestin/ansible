@@ -22,9 +22,9 @@ tasks:
       - "ansible-playbook -D playbooks/all.yml"
 
   run-docker:
-    desc: Run docker playbook
+    desc: Run podman services playbook for docker.pikaviestin.fi
     cmds:
-      - "ansible-playbook -D playbooks/docker.yml"
+      - "ansible-playbook -D playbooks/podman-containers.yml"
 
   run-valvonta:
     desc: Run valvonta playbook
