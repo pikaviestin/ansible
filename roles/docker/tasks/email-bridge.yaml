@@ -8,4 +8,4 @@
    restart_policy: unless-stopped
    network_mode: host
    volumes:
-    - /opt/docker/appdata/emailbrdige:/app/data
+    - "{{ container_appdata_dir }}/emailbrdige:/app/data"

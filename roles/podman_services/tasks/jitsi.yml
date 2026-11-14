@@ -1,0 +1,100 @@
+---
+- name: "Jitsi: service"
+  ansible.builtin.include_role:
+    name: uumas.podman.service
+  vars:
+    service_name: jitsi
+    service_container_image: docker.io/jitsi/web:{{ jitsi_docker_tag }}
+    service_container_publish_ports:
+      - name: http
+        container_port: 80
+        host_address: 127.0.0.1
+        host_port: "{{ jitsi_http_port }}"
+    service_container_env:
+      DISABLE_HTTPS: "1"
+      PUBLIC_URL: https://{{ jitsi_domain }}
+      TZ: "{{ timezone }}"
+      ENABLE_PREJOIN_PAGE: "1"
+      ENABLE_REQUIRE_DISPLAY_NAME: "1"
+      ENABLE_NOISY_MIC_DETECTION: "0"
+      ENABLE_BREAKOUT_ROOMS: "1"
+      JICOFO_AUTH_USER: focus
+      COLIBRI_WEBSOCKET_JVB_LOOKUP_NAME: jitsi-jvb
+      XMPP_BOSH_URL_BASE: http://jitsi-prosody:5280
+      XMPP_SERVER: jitsi-prosody
+      XMPP_DOMAIN: meet.jitsi
+      XMPP_AUTH_DOMAIN: auth.meet.jitsi
+      XMPP_MUC_DOMAIN: muc.meet.jitsi
+    service_additional_containers:
+      - name: prosody
+        image: docker.io/jitsi/prosody:{{ jitsi_docker_tag }}
+        env:
+          PUBLIC_URL: https://{{ jitsi_domain }}
+          TZ: "{{ timezone }}"
+          ENABLE_LOBBY: "1"
+          ENABLE_BREAKOUT_ROOMS: "1"
+          JICOFO_AUTH_USER: focus
+          JICOFO_AUTH_PASSWORD: "{{ jitsi_pw.jicofo_auth }}"
+          JVB_AUTH_USER: jvb
+          JVB_AUTH_PASSWORD: "{{ jitsi_pw.jvb_auth }}"
+          TURN_CREDENTIALS: "{{ turn_secret }}"
+          TURN_HOST: "{{ turn_domain }}"
+          TURN_PORT: "443"
+          TURNS_HOST: "{{ turn_domain }}"
+          TURNS_PORT: "443"
+          XMPP_DOMAIN: meet.jitsi
+          XMPP_AUTH_DOMAIN: auth.meet.jitsi
+          XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+          XMPP_MUC_DOMAIN: muc.meet.jitsi
+          XMPP_MODULES: muc_census
+      - name: jicofo
+        image: docker.io/jitsi/jicofo:{{ jitsi_docker_tag }}
+        env:
+          TZ: "{{ timezone }}"
+          JVB_BREWERY_MUC: jvbbrewery
+          JICOFO_AUTH_USER: focus
+          JICOFO_AUTH_PASSWORD: "{{ jitsi_pw.jicofo_auth }}"
+          XMPP_DOMAIN: meet.jitsi
+          XMPP_AUTH_DOMAIN: auth.meet.jitsi
+          XMPP_MUC_DOMAIN: muc.meet.jitsi
+          XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+          XMPP_SERVER: jitsi-prosody
+          ENABLE_RECORDING: "0"
+        requires: [jitsi-prosody.service]
+      - name: jvb
+        image: docker.io/jitsi/jvb:{{ jitsi_docker_tag }}
+        publish_ports:
+          # Additional containers get no defaults merged in: set every field.
+          - name: media
+            type: port
+            container_port: 10000
+            protocol: udp
+            host_address: 0.0.0.0
+            host_port: 10000
+          - name: media-tcp
+            type: port
+            container_port: 4443
+            protocol: tcp
+            host_address: 0.0.0.0
+            host_port: 4443
+        env:
+          PUBLIC_URL: https://{{ jitsi_domain }}
+          TZ: "{{ timezone }}"
+          JVB_PORT: "10000"
+          JVB_TCP_PORT: "4443"
+          JVB_TCP_HARVESTER_DISABLED: "false"
+          JVB_BREWERY_MUC: jvbbrewery
+          JVB_STUN_SERVERS: meet-jit-si-turnrelay.jitsi.net:443
+          JVB_AUTH_USER: jvb
+          JVB_AUTH_PASSWORD: "{{ jitsi_pw.jvb_auth }}"
+          XMPP_AUTH_DOMAIN: auth.meet.jitsi
+          XMPP_INTERNAL_MUC_DOMAIN: internal-muc.meet.jitsi
+          XMPP_SERVER: jitsi-prosody
+        requires: [jitsi-prosody.service]
+
+- name: "Jitsi: vhost"
+  ansible.builtin.include_tasks: vhost.yml
+  vars:
+    podman_vhost_service: jitsi
+    podman_vhost_port: "{{ jitsi_http_port }}"
+    podman_vhost_domains: ["{{ jitsi_domain }}"]

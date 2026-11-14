@@ -1,0 +1,11 @@
+---
+# Expects: podman_vhost_service, podman_vhost_domains, podman_vhost_port
+- name: "Reverse proxy for {{ podman_vhost_service }}"
+  ansible.builtin.include_role:
+    name: uumas.general.vhost
+  vars:
+    vhost_id: "{{ podman_vhost_service }}"
+    vhost_type: reverse_proxy
+    vhost_domains: "{{ podman_vhost_domains }}"
+    vhost_proxy_target_host: 127.0.0.1
+    vhost_proxy_target_port: "{{ podman_vhost_port }}"

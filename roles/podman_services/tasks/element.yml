@@ -1,0 +1,40 @@
+---
+- name: "Element: data directory"
+  ansible.builtin.file:
+    path: "{{ container_appdata_dir }}/element"
+    state: directory
+    mode: "0755"
+
+- name: "Element: config"
+  ansible.builtin.copy:
+    content: "{{ element_config | to_nice_json }}"
+    dest: "{{ container_appdata_dir }}/element/config.json"
+    mode: "0644"
+
+- name: "Element: service"
+  ansible.builtin.include_role:
+    name: uumas.podman.service
+  vars:
+    service_name: element
+    service_container_image: "{{ element_image }}"
+    # The image runs nginx unprivileged; podman (unlike docker) doesn't allow
+    # binding :80 then.
+    service_container_env:
+      ELEMENT_WEB_PORT: "8080"
+    service_container_publish_ports:
+      - name: http
+        container_port: 8080
+        host_address: 127.0.0.1
+        host_port: "{{ element_http_port }}"
+    service_container_mounts:
+      - type: bind
+        source: "{{ container_appdata_dir }}/element/config.json"
+        destination: /app/config.json
+        readonly: true
+
+- name: "Element: vhost"
+  ansible.builtin.include_tasks: vhost.yml
+  vars:
+    podman_vhost_service: element
+    podman_vhost_port: "{{ element_http_port }}"
+    podman_vhost_domains: "{{ element_domains }}"

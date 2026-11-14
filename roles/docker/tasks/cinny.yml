@@ -1,13 +1,13 @@
 ---
 - name: Create cinny appdata directory
   file:
-   path: /opt/docker/appdata/cinny
+   path: "{{ container_appdata_dir }}/cinny"
    state: directory
 
 - name: Copy Cinny hs config
   template:
    src: config.json
-   dest: /opt/docker/appdata/cinny/config.json
+   dest: "{{ container_appdata_dir }}/cinny/config.json"
 
 - name: Cinny Container
   docker_container:
@@ -16,7 +16,7 @@
    pull: yes
    restart_policy: unless-stopped
    volumes:
-    - /opt/docker/appdata/cinny/config.json:/app/config.json
+    - "{{ container_appdata_dir }}/cinny/config.json:/app/config.json"
    labels:
     traefik.enable: "true"
     traefik.http.routers.cinny-rtr.entrypoints: "websecure"

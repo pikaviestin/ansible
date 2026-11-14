@@ -1,0 +1,36 @@
+---
+# Kept as a compose project because its secrets live only in its .env on the host.
+- name: "Mobilizon: compose override publishing http on localhost"
+  ansible.builtin.copy:
+    dest: "{{ mobilizon_compose_dir }}/docker-compose.override.yml"
+    mode: "0644"
+    content: |
+      # Managed by Ansible (pikaviestin/ansible roles/podman_services)
+      services:
+        mobilizon:
+          ports:
+            - "127.0.0.1:{{ mobilizon_http_port }}:4000"
+
+# Declared as an external network in its compose file.
+- name: "Mobilizon: legacy traefik_proxy network"
+  containers.podman.podman_network:
+    name: traefik_proxy
+
+- name: "Mobilizon: compose up on podman"
+  ansible.builtin.command: docker compose up -d --remove-orphans
+  args:
+    chdir: "{{ mobilizon_compose_dir }}"
+  environment:
+    DOCKER_HOST: unix:///run/podman/podman.sock
+  register: mobilizon_up
+  changed_when: "'Started' in mobilizon_up.stderr or 'Created' in mobilizon_up.stderr or 'Recreated' in mobilizon_up.stderr"
+
+- name: "Mobilizon: reverse proxy"
+  ansible.builtin.include_role:
+    name: uumas.general.vhost
+  vars:
+    vhost_id: mobilizon
+    vhost_type: reverse_proxy
+    vhost_domains: "{{ mobilizon_domains }}"
+    vhost_proxy_target_host: 127.0.0.1
+    vhost_proxy_target_port: "{{ mobilizon_http_port }}"

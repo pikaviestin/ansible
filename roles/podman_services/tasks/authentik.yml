@@ -1,0 +1,74 @@
+---
+- name: "Authentik: data directories"
+  ansible.builtin.file:
+    path: "{{ container_appdata_dir }}/authentik/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: ["", templates, media, backups]
+
+- name: "Authentik: custom email template (tilin-varmistus)"
+  ansible.builtin.copy:
+    src: templates/authentik/custom-templates/tilin-varmistus.html
+    dest: "{{ container_appdata_dir }}/authentik/templates/tilin-varmistus.html"
+    mode: "0644"
+
+- name: "Authentik: service"
+  ansible.builtin.include_role:
+    name: uumas.podman.service
+  vars:
+    service_name: authentik
+    service_container_image: "{{ authentik_image }}"
+    service_container_command: [server]
+    service_redis: true
+    service_container_publish_ports:
+      - name: http
+        container_port: 9000
+        host_address: 127.0.0.1
+        host_port: 9000
+      - name: metrics
+        container_port: 9300
+        host_address: 10.0.199.43
+        host_port: 9300
+    service_container_mounts:
+      - type: bind
+        source: "{{ container_appdata_dir }}/authentik/templates"
+        destination: /templates
+      - type: bind
+        source: "{{ container_appdata_dir }}/authentik/media"
+        destination: /media
+    service_container_env:
+      AUTHENTIK_EMAIL__FROM: "{{ authentik_email_from }}"
+      AUTHENTIK_EMAIL__HOST: "{{ authentik_email_host }}"
+      AUTHENTIK_EMAIL__PORT: "{{ authentik_email_port }}"
+      AUTHENTIK_EMAIL__USE_TLS: "{{ authentik_email_use_tls }}"
+      AUTHENTIK_EMAIL__TIMEOUT: "10"
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_SECRET_KEY: "{{ authentik_secret_key }}"
+      AUTHENTIK_LOG_LEVEL: "{{ authentik_log_level }}"
+      AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_psql_host }}"
+      AUTHENTIK_POSTGRESQL__USER: "{{ authentik_psql_user }}"
+      AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_psql_user }}"
+      AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
+    # No container socket: only the embedded outpost is supported.
+    service_additional_containers:
+      - name: worker
+        command: [worker]
+        user: root
+        publish_ports: []
+        mounts:
+          - type: bind
+            source: "{{ container_appdata_dir }}/authentik/templates"
+            destination: /templates
+          - type: bind
+            source: "{{ container_appdata_dir }}/authentik/media"
+            destination: /media
+          - type: bind
+            source: "{{ container_appdata_dir }}/authentik/backups"
+            destination: /backups
+
+- name: "Authentik: vhost"
+  ansible.builtin.include_tasks: vhost.yml
+  vars:
+    podman_vhost_service: authentik
+    podman_vhost_port: 9000
+    podman_vhost_domains: [login.pikaviestin.fi]

@@ -1,0 +1,34 @@
+---
+
+authentik_log_level: info
+authentik_image: ghcr.io/goauthentik/server:2026.8.4
+cinny_image: docker.io/ajbura/cinny:v4.12.6
+element_image: docker.io/vectorim/element-web:latest
+jitsi_docker_tag: stable
+
+cinny_http_port: 8081
+element_http_port: 8082
+jitsi_http_port: 8083
+
+container_appdata_dir: /opt/docker/appdata
+
+mobilizon_compose_dir: /etc/docker/compose/docker-mobilizon
+mobilizon_domains:
+  - jarkkaa.fi
+mobilizon_http_port: 4000
+
+podman_prepull_images:
+  - "{{ authentik_image }}"
+  - "{{ cinny_image }}"
+  - "{{ element_image }}"
+  - docker.io/jitsi/web:{{ jitsi_docker_tag }}
+  - docker.io/jitsi/prosody:{{ jitsi_docker_tag }}
+  - docker.io/jitsi/jicofo:{{ jitsi_docker_tag }}
+  - docker.io/jitsi/jvb:{{ jitsi_docker_tag }}
+  - docker.io/valkey/valkey:alpine
+
+podman_retired_socket_proxies: [authentik, cinny, element, jitsi]
+podman_retired_socket_helpers: [caddy-socket-proxy, http-socat]
+podman_retired_helper_images:
+  - docker.io/alpine/socat:latest
+  - docker.io/library/caddy:2-alpine

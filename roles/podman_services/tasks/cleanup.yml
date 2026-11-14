@@ -1,0 +1,55 @@
+---
+# Removes socket helpers (caddy socket proxies, socat) left by earlier deployments.
+- name: "Cleanup: restart services onto their current networks first"
+  ansible.builtin.meta: flush_handlers
+
+- name: "Cleanup: helper names"
+  ansible.builtin.set_fact:
+    podman_cleanup_units: >-
+      {{ podman_retired_socket_proxies | product(podman_retired_socket_helpers) | map('join', '-') | list }}
+    # Quadlet .image files are named after the image with / replaced by _.
+    podman_cleanup_images: >-
+      {{ podman_retired_helper_images | map('replace', '/', '_') | list }}
+
+# Includes the generated <name>-network.service / <image>-image.service units,
+# which stay "active (exited)" in memory after their quadlet files are gone.
+- name: "Cleanup: stop helper units"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: stopped
+  loop: >-
+    {{ podman_cleanup_units | map('regex_replace', '$', '.socket') | list
+       + podman_cleanup_units | map('regex_replace', '$', '.service') | list
+       + podman_cleanup_units | map('regex_replace', '$', '-network.service') | list
+       + podman_cleanup_images | map('regex_replace', '$', '-image.service') | list }}
+  failed_when: false
+
+- name: "Cleanup: remove helper unit files, sockets and data"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: >-
+    {{ podman_cleanup_units | map('regex_replace', '^(.*)$', '/etc/containers/systemd/\1.container') | list
+       + podman_cleanup_units | map('regex_replace', '^(.*)$', '/etc/containers/systemd/\1.network') | list
+       + podman_cleanup_units | map('regex_replace', '^(.*)$', '/etc/systemd/system/\1.socket') | list
+       + podman_cleanup_units | map('regex_replace', '^(.*)$', '/run/\1.sock') | list
+       + podman_cleanup_units | map('regex_replace', '^(.*)$', '/srv/\1') | list
+       + podman_cleanup_images | map('regex_replace', '^(.*)$', '/etc/containers/systemd/\1.image') | list }}
+  register: podman_cleanup_files
+
+- name: "Cleanup: reload systemd"
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: podman_cleanup_files is changed
+
+- name: "Cleanup: remove helper networks"
+  containers.podman.podman_network:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ podman_cleanup_units }}"
+
+- name: "Cleanup: remove helper images"
+  containers.podman.podman_image:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ podman_retired_helper_images }}"

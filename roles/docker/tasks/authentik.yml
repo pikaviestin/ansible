@@ -1,30 +1,30 @@
 ---
 - name: "Authentik: Check appdata dir"
   stat:
-   path: /opt/docker/appdata/authentik
+   path: "{{ container_appdata_dir }}/authentik"
   register: authentik_appdata
 
 - name: "Authentik: Create appdata directory"
   file:
-   path: /opt/docker/appdata/authentik
+   path: "{{ container_appdata_dir }}/authentik"
    state: directory
   when: not authentik_appdata.stat.exists
 
 - name: "Authentik: Check templates dir"
   stat:
-   path: /opt/docker/appdata/authentik/templates
+   path: "{{ container_appdata_dir }}/authentik/templates"
   register: authentik_appdata_templates
 
 - name: "Authentik: Create Authentik templates directory"
   file:
-   path: /opt/docker/appdata/authentik/templates
+   path: "{{ container_appdata_dir }}/authentik/templates"
    state: directory
   when: not authentik_appdata_templates.stat.exists
 
 - name: "Authentik: Copy custom email template (tilin-varmistus)"
   copy:
    src: "templates/authentik/custom-templates/tilin-varmistus.html"
-   dest: /opt/docker/appdata/authentik/templates/tilin-varmistus.html
+   dest: "{{ container_appdata_dir }}/authentik/templates/tilin-varmistus.html"
 
 - name: "Authentik: Docker Network"
   docker_network:
@@ -62,8 +62,8 @@
     AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
     AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
    volumes:
-    - /opt/docker/appdata/authentik/templates:/templates
-    - /opt/docker/appdata/authentik/media:/media
+    - "{{ container_appdata_dir }}/authentik/templates:/templates"
+    - "{{ container_appdata_dir }}/authentik/media:/media"
    ports:
     - "127.0.0.1:9000:9000"
     - "10.0.199.43:9300:9300"
@@ -107,9 +107,9 @@
     AUTHENTIK_POSTGRESQL__PASSWORD: "{{ authentik_psql_pw }}"
     AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
    volumes:
-    - /opt/docker/appdata/authentik/backups:/backups
-    - /opt/docker/appdata/authentik/media:/media
-    - /opt/docker/appdata/authentik/templates:/templates
-    - /var/run/docker.sock:/var/run/docker.sock
+    - "{{ container_appdata_dir }}/authentik/backups:/backups"
+    - "{{ container_appdata_dir }}/authentik/media:/media"
+    - "{{ container_appdata_dir }}/authentik/templates:/templates"
+    - "{{ container_socket_path }}:/var/run/docker.sock"
    networks:
     - name: authentik

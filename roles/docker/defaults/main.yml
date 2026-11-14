@@ -1,3 +1,7 @@
 ---
 
 authentik_log_level: info
+
+container_socket_path: /var/run/docker.sock
+
+container_appdata_dir: /opt/docker/appdata

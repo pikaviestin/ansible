@@ -1,0 +1,19 @@
+---
+- name: Authentik
+  ansible.builtin.import_tasks: authentik.yml
+  tags: [authentik]
+- name: Cinny
+  ansible.builtin.import_tasks: cinny.yml
+  tags: [cinny]
+- name: Element
+  ansible.builtin.import_tasks: element.yml
+  tags: [element]
+- name: Jitsi
+  ansible.builtin.import_tasks: jitsi.yml
+  tags: [jitsi]
+- name: Mobilizon
+  ansible.builtin.import_tasks: mobilizon.yml
+  tags: [mobilizon]
+- name: Cleanup retired caddy socket proxies
+  ansible.builtin.import_tasks: cleanup.yml
+  tags: [cleanup]
